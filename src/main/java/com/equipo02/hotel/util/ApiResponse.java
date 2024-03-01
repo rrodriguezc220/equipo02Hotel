@@ -1,5 +1,13 @@
+/**
+ * @file: ApiResponse.java
+ * @author: (c) 2024 MARCO
+ * @created: 29 feb. 2024 17:28:30
+ */
 package com.equipo02.hotel.util;
-
+/**
+ * @param <T>
+ * 
+ */
 public class ApiResponse<T> {
 	private boolean success;
     private String message;
