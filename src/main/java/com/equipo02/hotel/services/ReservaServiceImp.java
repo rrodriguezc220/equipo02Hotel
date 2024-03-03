@@ -110,7 +110,6 @@ public class ReservaServiceImp implements ReservaService {
 	    if (!reservaOptional.isPresent()) {
 	        throw new EntityNotFoundException(ErrorMessage.RESERVA_NOT_FOUND);
 	    }
-	    
 	    Reserva reserva = reservaOptional.get();
 	    if (!(reserva.getEmpleado() == null)) {
 	        throw new IllegalOperationException("La reserva tiene empleados asignados");
@@ -121,7 +120,6 @@ public class ReservaServiceImp implements ReservaService {
 	    if (!reserva.getHabitaciones().isEmpty()) {
 	        throw new IllegalOperationException("La reserva tiene habitaciones asignadas");
 	    }
-
 	    reservaRepository.deleteById(idReserva);
 	}
 	
@@ -152,25 +150,16 @@ public class ReservaServiceImp implements ReservaService {
 	    }
 	    Habitacion habitacion = optionalHabitacion.get();
 	    if (!reserva.getHabitaciones().contains(habitacion)) {
-	        throw new IllegalOperationException("La habitación no está asignada a la reserva.");
+	        throw new IllegalOperationException("La habitación no está asignada a la reserva");
 	    }
 	    reserva.getHabitaciones().remove(habitacion);
 	    return reservaRepository.save(reserva);
 	}
 
 	
+	
+	
 
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
