@@ -5,13 +5,22 @@
  */
 package com.equipo02.hotel.domain;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 
@@ -50,36 +59,30 @@ public class Reserva {
     
     
     /**
-     * Huesped asociado a la reserva.
-     */
-    
-    /**
      * Empleado responsable de la reserva.
      */
-    
-    /**
-     * Lista de habitaciones asociadas a la reserva.
-     */
-    
-    
-    
-    /*
-    @ManyToOne
-    @JsonBackReference
-    private Huesped huesped;
-
     @ManyToOne
     @JsonBackReference
     private Empleado empleado;    
     
-
+    
+    /**
+     * Huesped asociado a la reserva.
+     */
+    @ManyToOne
+    @JsonBackReference
+    private Huesped huesped;
+    
+    
+    /**
+     * Lista de habitaciones asociadas a la reserva.
+     */
     @ManyToMany
+    @JsonManagedReference
     @JoinTable(name = "habitacion_Reserva",
     		joinColumns = @JoinColumn(name = "idReserva"),
     		inverseJoinColumns = @JoinColumn(name = "idHabitacion"))
     private List<Habitacion> habitaciones = new ArrayList<Habitacion>();
-
-    */
     
     
     /**
@@ -110,7 +113,6 @@ public class Reserva {
 		this.estado = estado;
 	}
 	
-	/*
 	public Huesped getHuesped() {
 		return huesped;
 	}
@@ -129,7 +131,6 @@ public class Reserva {
 	public void setHabitaciones(List<Habitacion> habitaciones) {
 		this.habitaciones = habitaciones;
 	}
-    */
-    
+	
 	
 }

@@ -5,15 +5,18 @@
  */
 
 package com.equipo02.hotel.domain;
+import java.util.ArrayList;
+import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+
+import jakarta.persistence.OneToMany;
 
 /**
  * Clase que representa un empleado en la persistencia
@@ -36,17 +39,12 @@ public class Empleado {
 	
 	private String correoEmpleado;
 	
-	  // Relación muchos a uno con el supervisor
-  /*  @ManyToOne
-    @JoinColumn(name = "supervisor_id")
-    private Empleado supervisor;*/
 	
-	/*
-	 * @OneToMany(mappedBy = "empleado")
-	 * 
-	 * @JsonManagedReference private List<Reserva> reservas = new ArrayList<>();
-	 */
+    @OneToMany(mappedBy = "empleado")
+	@JsonManagedReference
+	private List<Reserva> reservas = new ArrayList<>();
 	
+    
 	public Long getIdEmpleado() {
 		return idEmpleado;
 	}
@@ -95,18 +93,12 @@ public class Empleado {
 		this.correoEmpleado = correoEmpleado;
 	}
 
-	/*public Empleado getSupervisor() {
-		return supervisor;
-	}
-
-	public void setSupervisor(Empleado supervisor) {
-		this.supervisor = supervisor;
-	}*/
-	/* public List<Reserva> getReservas() {
+	
+	public List<Reserva> getReservas() {
 		return reservas;
 	}
 
 	public void setReservas(List<Reserva> reservas) {
 		this.reservas = reservas;
-	}*/
+	}
 }

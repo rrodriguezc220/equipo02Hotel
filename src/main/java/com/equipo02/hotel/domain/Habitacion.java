@@ -1,7 +1,10 @@
 
 package com.equipo02.hotel.domain;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import jakarta.persistence.Entity;
@@ -26,9 +29,12 @@ public class Habitacion {
 	 private boolean disponible;
 	 
 	 
-	/* @ManyToMany(mappedBy = "habitaciones")
-	 private List<Reserva> reservas;
-	 */
+	@ManyToMany(mappedBy = "habitaciones")
+    @JsonBackReference
+	private List<Reserva> reservas;
+	
+	
+	
 	public Long getIdHabitacion() {
 		return idHabitacion;
 	}

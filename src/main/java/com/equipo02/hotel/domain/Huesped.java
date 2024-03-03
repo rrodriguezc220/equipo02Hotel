@@ -6,7 +6,11 @@
 
 package com.equipo02.hotel.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 /*import java.util.ArrayList;
@@ -20,6 +24,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 //import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 
@@ -49,12 +54,11 @@ public class Huesped {
     @JoinColumn(name = "idAval")
 	private Huesped aval;
 	
-	/*
-	 * @OneToMany(mappedBy = "huesped")
-	 * 
-	 * @JsonManagedReference private List<Reserva> reservas = new ArrayList<>();
-	 */
-
+	@OneToMany(mappedBy = "huesped")
+	@JsonManagedReference
+	private List<Reserva> reservas = new ArrayList<>();
+	
+	
 	public Long getIdHuesped() {
 		return idHuesped;
 	}
@@ -111,9 +115,7 @@ public class Huesped {
 		this.aval = aval;
 	}
 
-	/*
-	 * public List<Reserva> getReservas() { return reservas; }
-	 * 
-	 * public void setReservas(List<Reserva> reservas) { this.reservas = reservas; }
-	 */
+	public List<Reserva> getReservas() { return reservas; }
+	public void setReservas(List<Reserva> reservas) { this.reservas = reservas; }
+	
 }
