@@ -8,7 +8,6 @@ package com.equipo02.hotel.domain;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -22,6 +21,8 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+
+
 
 /**
  * Clase que representa una reserva en la persistencia
@@ -38,6 +39,7 @@ public class Reserva {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idReserva;
+    
     /**
      * Fecha de inicio de la reserva.
      */
@@ -48,14 +50,15 @@ public class Reserva {
      * Fecha de fin de la reserva.
      */
     @Temporal(TemporalType.DATE)
+    
     private Date fechaFin;
     
     
     /**
      * Estado de la reserva (activa/inactiva).
      */
-    private boolean estado;
     
+    private boolean estado;
     
     /**
      * Huesped asociado a la reserva.
@@ -63,6 +66,7 @@ public class Reserva {
     @ManyToOne
     @JsonBackReference
     private Huesped huesped;
+    
     
     /**
      * Empleado responsable de la reserva.

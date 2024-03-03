@@ -31,7 +31,7 @@ import com.equipo02.hotel.util.ApiResponse;
  */
 
 @RestController
-@RequestMapping("/api/reservas")
+@RequestMapping(value = "/api/reservas", headers = "Api-Version=1")
 public class ReservaController {
 	
 	
@@ -47,7 +47,7 @@ public class ReservaController {
      * @return ResponseEntity con la lista de reservas y un mensaje de éxito.
      * @throws EntityNotFoundException si no se encuentran reservas.
      */
-    @GetMapping
+    @GetMapping()
 	public ResponseEntity<?> listarTodos() throws EntityNotFoundException{
 		List<Reserva> reservas = reservaService.listarTodos();
 		List<ReservaDTO> reservasDTOs = reservas.stream().map(reserva -> modelMapper.map(reserva, ReservaDTO.class)).collect(Collectors.toList());
@@ -82,7 +82,7 @@ public class ReservaController {
      * @throws IllegalOperationException si la operación no es válida.
      */
     
-    @PostMapping
+    @PostMapping()
 	public ResponseEntity<?> guardarReserva(@RequestBody ReservaDTO reservaDTO) throws IllegalOperationException {
 		Reserva reserva = modelMapper.map(reservaDTO, Reserva.class);
 		reservaService.guardarReserva(reserva);
@@ -125,6 +125,15 @@ public class ReservaController {
 	}
     
     
+    /**
+     * Asigna una habitación a una reserva.
+     *
+     * @param idReserva    El id de la reserva a la que se desea asignar la habitación.
+     * @param idHabitacion El id de la habitación a asignar.
+     * @return ResponseEntity con la reserva actualizada y un mensaje de éxito.
+     * @throws EntityNotFoundException    si la reserva o la habitación no se encuentra en la persistencia.
+     * @throws IllegalOperationException si la habitación ya está asignada a la reserva.
+     */
     @PutMapping("/{idReserva}/habitaciones/{idHabitacion}")
     public ResponseEntity<?> asignarHabitacion(@PathVariable Long idReserva, @PathVariable Long idHabitacion) throws EntityNotFoundException, IllegalOperationException {
         Reserva reserva = reservaService.asignarHabitacion(idReserva, idHabitacion);
@@ -132,8 +141,16 @@ public class ReservaController {
         ApiResponse<ReservaDTO> response = new ApiResponse<>(true, "Habitación asignada a la reserva con éxito.", reservaDTO);
         return ResponseEntity.ok(response);
     }
-    
-    
+
+    /**
+     * Elimina una habitación de una reserva.
+     *
+     * @param idReserva    El id de la reserva de la que se desea eliminar la habitación.
+     * @param idHabitacion El id de la habitación a eliminar.
+     * @return ResponseEntity con la reserva actualizada y un mensaje de éxito.
+     * @throws EntityNotFoundException    si la reserva o la habitación no se encuentra en la persistencia.
+     * @throws IllegalOperationException si la habitación no está asignada a la reserva.
+     */
     @DeleteMapping("/{idReserva}/habitaciones/{idHabitacion}")
     public ResponseEntity<?> eliminarHabitacion(@PathVariable Long idReserva, @PathVariable Long idHabitacion) throws EntityNotFoundException, IllegalOperationException {
         Reserva reserva = reservaService.eliminarHabitacion(idReserva, idHabitacion);
@@ -141,7 +158,7 @@ public class ReservaController {
         ApiResponse<ReservaDTO> response = new ApiResponse<>(true, "Habitación eliminada de la reserva con éxito.", reservaDTO);
         return ResponseEntity.ok(response);
     }
-    
+
     
 }
 

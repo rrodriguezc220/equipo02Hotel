@@ -68,7 +68,6 @@ public class ReservaServiceImp implements ReservaService {
 	@Override
 	@Transactional
 	public Reserva guardarReserva(Reserva reserva) throws IllegalOperationException {
-		
 		return reservaRepository.save(reserva);
 	}
 	
@@ -89,7 +88,6 @@ public class ReservaServiceImp implements ReservaService {
 		Optional<Reserva> reservaEntity = reservaRepository.findById(idReserva);
 		if(reservaEntity.isEmpty())
 			throw new EntityNotFoundException(ErrorMessage.RESERVA_NOT_FOUND);
-		
 		reserva.setIdReserva(idReserva);
 		return reservaRepository.save(reserva);
 	}
@@ -110,20 +108,18 @@ public class ReservaServiceImp implements ReservaService {
 	    if (!reservaOptional.isPresent()) {
 	        throw new EntityNotFoundException(ErrorMessage.RESERVA_NOT_FOUND);
 	    }
-	    Reserva reserva = reservaOptional.get();
-	    if (!(reserva.getEmpleado() == null)) {
-	        throw new IllegalOperationException("La reserva tiene empleados asignados");
-	    }
-	    if (!(reserva.getHuesped() == null)) {
-	        throw new IllegalOperationException("La reserva tiene huespedes asignados");
-	    }
-	    if (!reserva.getHabitaciones().isEmpty()) {
-	        throw new IllegalOperationException("La reserva tiene habitaciones asignadas");
-	    }
 	    reservaRepository.deleteById(idReserva);
 	}
 	
-	
+	/**
+	 * Asigna una habitación a una reserva.
+	 *
+	 * @param idReserva    El id de la reserva a la que se desea asignar la habitación.
+	 * @param idHabitacion El id de la habitación a asignar.
+	 * @return La reserva actualizada con la habitación asignada.
+	 * @throws EntityNotFoundException    si la reserva o la habitación no se encuentra en la persistencia.
+	 * @throws IllegalOperationException si la habitación ya está asignada a la reserva.
+	 */
 	@Override
 	@Transactional
 	public Reserva asignarHabitacion(Long idReserva, Long idHabitacion) throws EntityNotFoundException, IllegalOperationException {
@@ -131,7 +127,7 @@ public class ReservaServiceImp implements ReservaService {
 	    Optional<Habitacion> optionalHabitacion = habitacionRepository.findById(idHabitacion);
 	    if (optionalHabitacion.isEmpty()) {
 	        throw new EntityNotFoundException(ErrorMessage.HABITACION_NOT_FOUND);
-	    }	    
+	    }
 	    Habitacion habitacion = optionalHabitacion.get();
 	    if (reserva.getHabitaciones().contains(habitacion)) {
 	        throw new IllegalOperationException("La habitación ya está asignada a la reserva");
@@ -140,6 +136,17 @@ public class ReservaServiceImp implements ReservaService {
 	    return reservaRepository.save(reserva);
 	}
 	
+	
+	
+	/**
+	 * Elimina una habitación de una reserva.
+	 *
+	 * @param idReserva    El id de la reserva de la que se desea eliminar la habitación.
+	 * @param idHabitacion El id de la habitación a eliminar.
+	 * @return La reserva actualizada sin la habitación asignada.
+	 * @throws EntityNotFoundException    si la reserva o la habitación no se encuentra en la persistencia.
+	 * @throws IllegalOperationException si la habitación no está asignada a la reserva.
+	 */
 	@Override
 	@Transactional
 	public Reserva eliminarHabitacion(Long idReserva, Long idHabitacion) throws EntityNotFoundException, IllegalOperationException {
@@ -155,7 +162,7 @@ public class ReservaServiceImp implements ReservaService {
 	    reserva.getHabitaciones().remove(habitacion);
 	    return reservaRepository.save(reserva);
 	}
-
+	
 	
 	
 	
