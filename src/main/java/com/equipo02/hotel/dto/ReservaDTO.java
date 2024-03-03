@@ -11,10 +11,14 @@ import java.util.Date;
  * 
  */
 public class ReservaDTO {
-
+	
+    /** Identificador único de la reserva. */
     private Long idReserva;
+    /** Fecha de inicio de la reserva. */
     private Date fechaInicio;
+    /** Fecha de fin de la reserva. */
     private Date fechaFin;
+    /** Estado de la reserva. */
     private boolean estado;
     
     /*
@@ -23,6 +27,10 @@ public class ReservaDTO {
     private List<Habitacion> habitaciones = new ArrayList<Habitacion>();
     */
     
+    
+    /**
+     * Métodos getters y setters para acceder y modificar los atributos de la clase Reserva.
+     */
 	public Long getIdReserva() {
 		return idReserva;
 	}

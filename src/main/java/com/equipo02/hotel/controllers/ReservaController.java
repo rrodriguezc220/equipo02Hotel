@@ -26,15 +26,27 @@ import com.equipo02.hotel.exception.IllegalOperationException;
 import com.equipo02.hotel.services.ReservaService;
 import com.equipo02.hotel.util.ApiResponse;
 
+/**
+ * Controlador REST que maneja las operaciones relacionadas con las reservas en el hotel.
+ */
+
 @RestController
 @RequestMapping("/api/reservas")
 public class ReservaController {
+	
+	
 	@Autowired
 	private ReservaService reservaService;
 	
     @Autowired
     private ModelMapper modelMapper;
     
+    /**
+     * Obtiene todas las reservas.
+     *
+     * @return ResponseEntity con la lista de reservas y un mensaje de éxito.
+     * @throws EntityNotFoundException si no se encuentran reservas.
+     */
     @GetMapping
 	public ResponseEntity<?> listarTodos() throws EntityNotFoundException{
 		List<Reserva> reservas = reservaService.listarTodos();
@@ -43,6 +55,13 @@ public class ReservaController {
 		return ResponseEntity.ok(response);
 	}
     
+    /**
+     * Obtiene una reserva por su id.
+     *
+     * @param id: El id de la reserva a buscar.
+     * @return ResponseEntity con la reserva encontrada y un mensaje de éxito.
+     * @throws EntityNotFoundException si la reserva no se encuentra.
+     */
     @GetMapping("/{id}")
 	public ResponseEntity<?> buscarPorIdReserva(@PathVariable Long id) throws EntityNotFoundException{
     	Reserva reserva = reservaService.buscarPorIdReserva(id);
@@ -51,6 +70,15 @@ public class ReservaController {
 		return ResponseEntity.ok(response);
 	}
     
+    /**
+     * Actualiza una reserva existente.
+     *
+     * @param id: El id de la reserva a actualizar.
+     * @param reservaDTO: La nueva información de la reserva.
+     * @return ResponseEntity con la reserva actualizada y un mensaje de éxito.
+     * @throws EntityNotFoundException    si la reserva no se encuentra.
+     * @throws IllegalOperationException si la operación no es válida.
+     */
     @PostMapping
 	public ResponseEntity<?> guardarReserva(@RequestBody ReservaDTO reservaDTO) throws IllegalOperationException {
 		Reserva reserva = modelMapper.map(reservaDTO, Reserva.class);
@@ -60,6 +88,15 @@ public class ReservaController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
     
+    /**
+     * Actualiza una reserva existente.
+     *
+     * @param id: El id de la reserva a actualizar.
+     * @param reservaDTO: La nueva información de la reserva.
+     * @return ResponseEntity con la reserva actualizada y un mensaje de éxito.
+     * @throws EntityNotFoundException    si la reserva no se encuentra.
+     * @throws IllegalOperationException si la operación no es válida.
+     */
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<ReservaDTO>> actualizarReserva(@PathVariable Long id, @RequestBody ReservaDTO reservaDTO) throws EntityNotFoundException, IllegalOperationException {
     	Reserva reserva = modelMapper.map(reservaDTO, Reserva.class);
@@ -69,6 +106,14 @@ public class ReservaController {
 		return ResponseEntity.ok(response);	
     }
     
+    /**
+     * Elimina una reserva por su id.
+     *
+     * @param id: El id de la reserva a eliminar.
+     * @return ResponseEntity con un mensaje de éxito.
+     * @throws EntityNotFoundException    si la reserva no se encuentra.
+     * @throws IllegalOperationException si la operación no es válida.
+     */
     @DeleteMapping("/{id}")
 	public ResponseEntity<?> eliminarReserva(@PathVariable Long id) throws EntityNotFoundException, IllegalOperationException {
     	reservaService.eliminarReserva(id);
@@ -77,5 +122,4 @@ public class ReservaController {
 	}
     
     
-	
 }
