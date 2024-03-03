@@ -1,4 +1,10 @@
-
+/**
+ * 
+ * @file: Habitacion.java
+ * @author: (c)2024 Cueva
+ * @created: 2 mar 2024, 22:42:38
+ *
+ */
 package com.equipo02.hotel.domain;
 import java.util.List;
 
@@ -11,28 +17,39 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 /**
- * 
- * @file: Habitacion.java
- * @author: (c)2024 Cueva
- * @created: 2 mar 2024, 22:42:38
- *
+ * Clase que representa una Habitación en el dominio del hotel.
  */
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,property = "idHabitacion")
 public class Habitacion {
+	
+	/**
+	  * Identificador único de la habitación.
+	  */
 	 @Id
 	 @GeneratedValue(strategy = GenerationType.IDENTITY)
 	 private Long idHabitacion;
+	 
+	 /**
+	  * Tipo de la habitación.
+	  */
 	 private String tipo;
+	 
+	 /**
+	  * Indica si la habitación está disponible o no.
+	  */
 	 private boolean disponible;
 	 
-	 
+	 /**
+	  * Lista de reservas asociadas a la habitación.
+	  */
 	@ManyToMany(mappedBy = "habitaciones")
     @JsonBackReference
 	private List<Reserva> reservas;
 	
-	
-	
+    /**
+     * Métodos getters y setters para acceder y modificar los atributos de la clase Habitación.
+     */
 	public Long getIdHabitacion() {
 		return idHabitacion;
 	}
