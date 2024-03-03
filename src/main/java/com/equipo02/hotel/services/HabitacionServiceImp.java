@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.equipo02.hotel.domain.Habitacion;
@@ -17,6 +18,7 @@ import com.equipo02.hotel.repositories.HabitacionRepository;
  * @created: 2 mar 2024, 22:51:08
  *
  */
+@Service
 public class HabitacionServiceImp implements HabitacionService {
 
 	@Autowired

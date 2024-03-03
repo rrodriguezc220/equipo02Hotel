@@ -26,9 +26,9 @@ public class Habitacion {
 	 private boolean disponible;
 	 
 	 
-	 @ManyToMany(mappedBy = "habitaciones")
+	/* @ManyToMany(mappedBy = "habitaciones")
 	 private List<Reserva> reservas;
-	 
+	 */
 	public Long getIdHabitacion() {
 		return idHabitacion;
 	}

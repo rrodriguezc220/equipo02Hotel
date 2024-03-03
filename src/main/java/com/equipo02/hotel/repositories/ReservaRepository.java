@@ -5,9 +5,10 @@
  */
 package com.equipo02.hotel.repositories;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.CrudRepository;
 import com.equipo02.hotel.domain.Reserva;
 
-public interface ReservaRepository extends CrudRepository<Reserva, Long> {
+public interface ReservaRepository extends JpaRepository<Reserva, Long> {
 
 }
