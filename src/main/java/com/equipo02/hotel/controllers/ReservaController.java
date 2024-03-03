@@ -61,14 +61,16 @@ public class ReservaController {
      * @param id: El id de la reserva a buscar.
      * @return ResponseEntity con la reserva encontrada y un mensaje de éxito.
      * @throws EntityNotFoundException si la reserva no se encuentra.
-     */
+    */
+    
     @GetMapping("/{id}")
-	public ResponseEntity<?> buscarPorIdReserva(@PathVariable Long id) throws EntityNotFoundException{
+    public ResponseEntity<?> buscarPorIdReserva(@PathVariable Long id) throws EntityNotFoundException{
     	Reserva reserva = reservaService.buscarPorIdReserva(id);
     	ReservaDTO reservaDTO = modelMapper.map(reserva, ReservaDTO.class);
 		ApiResponse<ReservaDTO> response = new ApiResponse<>(true, "Reserva obtenida con éxito.", reservaDTO);
 		return ResponseEntity.ok(response);
 	}
+    
     
     /**
      * Actualiza una reserva existente.
@@ -123,4 +125,24 @@ public class ReservaController {
 	}
     
     
+    @PutMapping("/{idReserva}/habitaciones/{idHabitacion}")
+    public ResponseEntity<?> asignarHabitacion(@PathVariable Long idReserva, @PathVariable Long idHabitacion) throws EntityNotFoundException, IllegalOperationException {
+        Reserva reserva = reservaService.asignarHabitacion(idReserva, idHabitacion);
+        ReservaDTO reservaDTO = modelMapper.map(reserva, ReservaDTO.class);
+        ApiResponse<ReservaDTO> response = new ApiResponse<>(true, "Habitación asignada a la reserva con éxito.", reservaDTO);
+        return ResponseEntity.ok(response);
+    }
+    
+    
+    @DeleteMapping("/{idReserva}/habitaciones/{idHabitacion}")
+    public ResponseEntity<?> eliminarHabitacion(@PathVariable Long idReserva, @PathVariable Long idHabitacion) throws EntityNotFoundException, IllegalOperationException {
+        Reserva reserva = reservaService.eliminarHabitacion(idReserva, idHabitacion);
+        ReservaDTO reservaDTO = modelMapper.map(reserva, ReservaDTO.class);
+        ApiResponse<ReservaDTO> response = new ApiResponse<>(true, "Habitación eliminada de la reserva con éxito.", reservaDTO);
+        return ResponseEntity.ok(response);
+    }
+    
+    
 }
+
+

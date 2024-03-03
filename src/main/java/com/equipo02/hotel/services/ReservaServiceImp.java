@@ -10,10 +10,13 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.equipo02.hotel.domain.Habitacion;
 import com.equipo02.hotel.domain.Reserva;
 import com.equipo02.hotel.exception.EntityNotFoundException;
 import com.equipo02.hotel.exception.ErrorMessage;
 import com.equipo02.hotel.exception.IllegalOperationException;
+import com.equipo02.hotel.repositories.HabitacionRepository;
 import com.equipo02.hotel.repositories.ReservaRepository;
 
 
@@ -22,8 +25,8 @@ public class ReservaServiceImp implements ReservaService {
 	
 	@Autowired
 	private ReservaRepository reservaRepository;
-	//@Autowired
-	//private HabitacionRepository habitacionRepository;
+	@Autowired
+	private HabitacionRepository habitacionRepository;
 	
 	
     /**
@@ -48,9 +51,10 @@ public class ReservaServiceImp implements ReservaService {
 	@Override
 	@Transactional(readOnly = true)
 	public Reserva buscarPorIdReserva(Long idReseva) throws EntityNotFoundException {
-		Optional<Reserva> reserva = reservaRepository.findById(idReseva);
-		//if (reserva.isEmpty()) throw new EntityExistsException(ErrorMessage.RESERVA_NOT_FOUND);
-		return reserva.get();
+		Optional<Reserva> reservaEntity = reservaRepository.findById(idReseva);
+		if(reservaEntity.isEmpty())
+			throw new EntityNotFoundException(ErrorMessage.RESERVA_NOT_FOUND);
+		return reservaEntity.get();
 	}
 	
 	
@@ -64,11 +68,7 @@ public class ReservaServiceImp implements ReservaService {
 	@Override
 	@Transactional
 	public Reserva guardarReserva(Reserva reserva) throws IllegalOperationException {
-		/*
-		if(!reservaRepository.findById(reserva.getIdReserva()).isEmpty()) {
-			throw new IllegalOperationException("El nombre del departamento ya existe");
-		}
-		*/
+		
 		return reservaRepository.save(reserva);
 	}
 	
@@ -86,19 +86,10 @@ public class ReservaServiceImp implements ReservaService {
 	@Transactional
 	public Reserva actualizarReserva(Long idReserva, Reserva reserva) throws EntityNotFoundException, IllegalOperationException {
 		
-		/*
 		Optional<Reserva> reservaEntity = reservaRepository.findById(idReserva);
 		if(reservaEntity.isEmpty())
 			throw new EntityNotFoundException(ErrorMessage.RESERVA_NOT_FOUND);
-		*/
 		
-		/*
-	    Reserva reservaActualizada = reservaEntity.get();
-
-	    reservaActualizada.setFechaInicio(reserva.getFechaInicio());
-	    reservaActualizada.setFechaFin(reservaActualizada.getFechaFin());
-	    reservaActualizada.setEstado(reserva.isEstado());
-	    */
 		reserva.setIdReserva(idReserva);
 		return reservaRepository.save(reserva);
 	}
@@ -119,7 +110,7 @@ public class ReservaServiceImp implements ReservaService {
 	    if (!reservaOptional.isPresent()) {
 	        throw new EntityNotFoundException(ErrorMessage.RESERVA_NOT_FOUND);
 	    }
-
+	    
 	    Reserva reserva = reservaOptional.get();
 	    if (!(reserva.getEmpleado() == null)) {
 	        throw new IllegalOperationException("La reserva tiene empleados asignados");
@@ -135,20 +126,48 @@ public class ReservaServiceImp implements ReservaService {
 	}
 	
 	
-	/*
-	public Reserva asignarHabitacion (Long idReserva, Long idHabitacion) throws EntityNotFoundException, IllegalOperationException{
-    	
-		Optional<Reserva> reservaEntity =  reservaRepository.findById(idReserva);
-		Optional<Habitacion> habitacionEntity = habitacionRepository.findById(idHabitacion);
-		
-		reservaEntity.get().setHabitaciones(habitacionEntity.get());
-		return reservaRepository.save(reservaEntity.get());
-		
-		
-    	return null;
-    }
-    */
+	@Override
+	@Transactional
+	public Reserva asignarHabitacion(Long idReserva, Long idHabitacion) throws EntityNotFoundException, IllegalOperationException {
+	    Reserva reserva = buscarPorIdReserva(idReserva);
+	    Optional<Habitacion> optionalHabitacion = habitacionRepository.findById(idHabitacion);
+	    if (optionalHabitacion.isEmpty()) {
+	        throw new EntityNotFoundException(ErrorMessage.HABITACION_NOT_FOUND);
+	    }
+	    Habitacion habitacion = optionalHabitacion.get();
+	    reserva.getHabitaciones().add(habitacion);
+	    return reservaRepository.save(reserva);
+	}
+	
+	@Override
+	@Transactional
+	public Reserva eliminarHabitacion(Long idReserva, Long idHabitacion) throws EntityNotFoundException, IllegalOperationException {
+	    Reserva reserva = buscarPorIdReserva(idReserva);
+	    Optional<Habitacion> optionalHabitacion = habitacionRepository.findById(idHabitacion);
+	    if (optionalHabitacion.isEmpty()) {
+	        throw new EntityNotFoundException(ErrorMessage.HABITACION_NOT_FOUND);
+	    }
+	    Habitacion habitacion = optionalHabitacion.get();
+	    if (!reserva.getHabitaciones().contains(habitacion)) {
+	        throw new IllegalOperationException("La habitación no está asignada a la reserva.");
+	    }
+	    reserva.getHabitaciones().remove(habitacion);
+	    return reservaRepository.save(reserva);
+	}
+
+	
 
 }
+
+
+
+
+
+
+
+
+
+
+
 
 

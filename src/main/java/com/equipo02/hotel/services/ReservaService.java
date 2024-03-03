@@ -55,6 +55,11 @@ public interface ReservaService {
     void eliminarReserva(Long id) throws EntityNotFoundException, IllegalOperationException;
     
     
-    //Reserva asignarHabitacion (Long idReserve, Long idHabitacion) throws EntityNotFoundException, IllegalOperationException;
+    Reserva asignarHabitacion (Long idReserve, Long idHabitacion) throws EntityNotFoundException, IllegalOperationException;
+    
+    Reserva eliminarHabitacion (Long idReserve, Long idHabitacion) throws EntityNotFoundException, IllegalOperationException;
+    
+    
+    
 }
 

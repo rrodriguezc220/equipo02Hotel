@@ -6,6 +6,7 @@
 package com.equipo02.hotel.exception;
 
 public class ErrorResponse {
+	
 	private String message;
 
     public ErrorResponse(String message) {
