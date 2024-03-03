@@ -79,6 +79,7 @@ public class ReservaController {
      * @throws EntityNotFoundException    si la reserva no se encuentra.
      * @throws IllegalOperationException si la operación no es válida.
      */
+    
     @PostMapping
 	public ResponseEntity<?> guardarReserva(@RequestBody ReservaDTO reservaDTO) throws IllegalOperationException {
 		Reserva reserva = modelMapper.map(reservaDTO, Reserva.class);

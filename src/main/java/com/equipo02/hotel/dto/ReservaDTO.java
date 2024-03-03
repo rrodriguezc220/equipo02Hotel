@@ -5,7 +5,13 @@
  */
 package com.equipo02.hotel.dto;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import com.equipo02.hotel.domain.Empleado;
+import com.equipo02.hotel.domain.Habitacion;
+import com.equipo02.hotel.domain.Huesped;
 
 /**
  * 
@@ -21,11 +27,11 @@ public class ReservaDTO {
     /** Estado de la reserva. */
     private boolean estado;
     
-    /*
+    
     private Huesped huesped;
     private Empleado empleado;    
     private List<Habitacion> habitaciones = new ArrayList<Habitacion>();
-    */
+
     
     
     /**
@@ -55,7 +61,6 @@ public class ReservaDTO {
 	public void setEstado(boolean estado) {
 		this.estado = estado;
 	}
-	/*
 	public Huesped getHuesped() {
 		return huesped;
 	}
@@ -74,6 +79,5 @@ public class ReservaDTO {
 	public void setHabitaciones(List<Habitacion> habitaciones) {
 		this.habitaciones = habitaciones;
 	}
-    */
     
 }

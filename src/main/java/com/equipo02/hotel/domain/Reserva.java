@@ -11,7 +11,6 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -59,27 +58,24 @@ public class Reserva {
     
     
     /**
-     * Empleado responsable de la reserva.
-     */
-    @ManyToOne
-    @JsonBackReference
-    private Empleado empleado;    
-    
-    
-    /**
      * Huesped asociado a la reserva.
      */
     @ManyToOne
     @JsonBackReference
     private Huesped huesped;
     
+    /**
+     * Empleado responsable de la reserva.
+     */
+    @ManyToOne
+    private Empleado empleado;    
+    
     
     /**
      * Lista de habitaciones asociadas a la reserva.
      */
     @ManyToMany
-    @JsonManagedReference
-    @JoinTable(name = "habitacion_Reserva",
+    @JoinTable(name = "habitacion_reserva",
     		joinColumns = @JoinColumn(name = "idReserva"),
     		inverseJoinColumns = @JoinColumn(name = "idHabitacion"))
     private List<Habitacion> habitaciones = new ArrayList<Habitacion>();

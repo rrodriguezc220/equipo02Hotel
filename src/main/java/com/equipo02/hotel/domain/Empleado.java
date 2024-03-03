@@ -8,7 +8,6 @@ package com.equipo02.hotel.domain;
 import java.util.ArrayList;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -41,7 +40,6 @@ public class Empleado {
 	
 	
     @OneToMany(mappedBy = "empleado")
-	@JsonManagedReference
 	private List<Reserva> reservas = new ArrayList<>();
 	
     
