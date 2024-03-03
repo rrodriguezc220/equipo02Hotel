@@ -4,6 +4,14 @@
  * @created: 2 mar 2024, 22:44:20
  */
 package com.equipo02.hotel.dto;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.equipo02.hotel.domain.Habitacion;
+import com.equipo02.hotel.domain.Reserva;
+
 /**
  * Clase que representa una Habitación en el dominio del hotel en forma de DTO (Data Transfer Object).
  */
@@ -17,14 +25,22 @@ public class HabitacionDTO {
      * Tipo de la habitación. 
      */
     private String tipo;
+    
+    /**
+	  * precio de la habitacion
+	  */
+	 private BigDecimal precio;
+	 /**
+	  * decripcionde la habitacion
+	  */
+	 private String descripcion;
     /**
      * Indica si la habitación está disponible o no.
      */
     private boolean disponible;
     
-    /*
     private List<Reserva> reservas = new ArrayList<Reserva>();
-    */
+    
     /**
      * Métodos getters y setters para acceder y modificar los atributos de la clase Habitación.
      */
@@ -47,13 +63,24 @@ public class HabitacionDTO {
 		this.disponible = disponible;
 	}
 	
-	/*
+	public BigDecimal getPrecio() {
+		return precio;
+	}
+	public void setPrecio(BigDecimal precio) {
+		this.precio = precio;
+	}
+	public String getDescripcion() {
+		return descripcion;
+	}
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
 	public List<Reserva> getReservas() {
 		return reservas;
 	}
 	public void setReservas(List<Reserva> reservas) {
 		this.reservas = reservas;
 	}
-    */
+    
     
 }

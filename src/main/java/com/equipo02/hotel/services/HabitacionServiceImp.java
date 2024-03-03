@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.equipo02.hotel.domain.Habitacion;
 import com.equipo02.hotel.exception.EntityNotFoundException;
+import com.equipo02.hotel.exception.ErrorMessage;
 import com.equipo02.hotel.exception.IllegalOperationException;
 import com.equipo02.hotel.repositories.HabitacionRepository;
 /**
@@ -44,7 +45,10 @@ public class HabitacionServiceImp implements HabitacionService {
 	@Transactional(readOnly = true)
 	public Habitacion buscarPorIdHabitacion(Long idHabitacion) throws EntityNotFoundException {
 		Optional<Habitacion> habitacion = habitacionRepository.findById(idHabitacion);
-		return habitacion.get();
+		if (habitacion.isEmpty()) {
+	        throw new EntityNotFoundException(ErrorMessage.HABITACION_NOT_FOUND);
+		}
+	        return habitacion.get();
 	}
 	/**
      * Método para guardar una nueva habitación.
@@ -68,6 +72,10 @@ public class HabitacionServiceImp implements HabitacionService {
 	@Override
 	@Transactional
 	public Habitacion actualizarHabitacion(Long idHabitacion, Habitacion habitacion) throws EntityNotFoundException, IllegalOperationException {
+		 Optional<Habitacion> habitacionOptional = habitacionRepository.findById(idHabitacion);
+		    if (!habitacionOptional.isPresent()) {
+		        throw new EntityNotFoundException(ErrorMessage.HABITACION_NOT_FOUND);
+		    }
 		habitacion.setIdHabitacion(idHabitacion);
 		return habitacionRepository.save(habitacion);
 	}
@@ -80,7 +88,38 @@ public class HabitacionServiceImp implements HabitacionService {
 	@Override
 	@Transactional
 	public void eliminarHabitacion(Long idHabitacion) throws EntityNotFoundException, IllegalOperationException {
+		 Optional<Habitacion> habitacionOptional = habitacionRepository.findById(idHabitacion);
+		    if (!habitacionOptional.isPresent()) {
+		        throw new EntityNotFoundException(ErrorMessage.HABITACION_NOT_FOUND);
+		    }
+		    
+		    Habitacion habitacion = habitacionOptional.get();
+		    if (!habitacion.getReservas().isEmpty()) {
+		        throw new IllegalOperationException("La habitación tiene reservas asignadas");
+		    }
 		habitacionRepository.deleteById(idHabitacion);
+	}
+	@Override
+	@Transactional
+	public Habitacion actualizarCampoHabitacion(Long id, Habitacion habitacion) throws EntityNotFoundException{
+	    Optional<Habitacion> habitacionEntity = habitacionRepository.findById(id);
+	    if(habitacionEntity.isEmpty()) {
+	        throw new EntityNotFoundException(ErrorMessage.HABITACION_NOT_FOUND);
+	    }
+	    habitacion.setIdHabitacion(id);
+	    if(habitacion.getTipo() == null) {
+	        habitacion.setTipo(habitacionEntity.get().getTipo());
+	    } 
+	    if(habitacion.isDisponible() != habitacionEntity.get().isDisponible()) {
+	        habitacion.setDisponible(habitacionEntity.get().isDisponible());
+	    }
+	    if(habitacion.getPrecio() == null) {
+	        habitacion.setPrecio(habitacionEntity.get().getPrecio());
+	    }
+	    if(habitacion.getDescripcion() == null) {
+	        habitacion.setDescripcion(habitacionEntity.get().getDescripcion());
+	    }
+	    return habitacionRepository.save(habitacion);
 	}
 
 

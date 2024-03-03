@@ -34,9 +34,8 @@ import com.equipo02.hotel.util.ApiResponse;
  */
 
 @RestController
-@RequestMapping("/api/habitaciones")
+@RequestMapping(value ="/api/habitaciones", headers = "Api-Version=1")
 public class HabitacionController {
-	
 	@Autowired
 	private HabitacionService habitacionService;
 	
