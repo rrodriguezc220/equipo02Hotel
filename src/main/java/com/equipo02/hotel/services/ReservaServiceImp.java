@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.equipo02.hotel.domain.Reserva;
 import com.equipo02.hotel.exception.EntityNotFoundException;
+import com.equipo02.hotel.exception.ErrorMessage;
 import com.equipo02.hotel.exception.IllegalOperationException;
 import com.equipo02.hotel.repositories.ReservaRepository;
 
@@ -114,22 +115,23 @@ public class ReservaServiceImp implements ReservaService {
 	@Override
 	@Transactional
 	public void eliminarReserva(Long idReserva) throws EntityNotFoundException, IllegalOperationException {
-		/*
-		Reserva reserva = reservaRepository.findById(idReserva).orElseThrow(
-				()->new EntityNotFoundException(ErrorMessage.RESERVA_NOT_FOUND)
-				);
-		if (!reserva.getEmpleados().isEmpty()) {
-			throw new IllegalOperationException("El departamento tiene empleados asignados");
-		}
-		if (!(reserva.getHuespedes().isEmpty()) {
-			throw new IllegalOperationException("El departamento tiene huespedes asignados");
-		}
-		if (!(reserva.getHabitaciones().isEmpty()) {
-			throw new IllegalOperationException("El departamento tiene habitaciones asignadas");
-		}
-		*/
-		
-		reservaRepository.deleteById(idReserva);
+	    Optional<Reserva> reservaOptional = reservaRepository.findById(idReserva);
+	    if (!reservaOptional.isPresent()) {
+	        throw new EntityNotFoundException(ErrorMessage.RESERVA_NOT_FOUND);
+	    }
+
+	    Reserva reserva = reservaOptional.get();
+	    if (!(reserva.getEmpleado() == null)) {
+	        throw new IllegalOperationException("La reserva tiene empleados asignados");
+	    }
+	    if (!(reserva.getHuesped() == null)) {
+	        throw new IllegalOperationException("La reserva tiene huespedes asignados");
+	    }
+	    if (!reserva.getHabitaciones().isEmpty()) {
+	        throw new IllegalOperationException("La reserva tiene habitaciones asignadas");
+	    }
+
+	    reservaRepository.deleteById(idReserva);
 	}
 	
 	
