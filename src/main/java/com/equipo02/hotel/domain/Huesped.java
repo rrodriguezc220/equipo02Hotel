@@ -1,7 +1,7 @@
 /**
  * @file: Huesped.java
- * @author: (c)2024 Rodriguez 
- * @created: Feb 29, 2024 1:29:59 AM
+ * @author: (c)2024 Rodriguez
+ * @created: 3 mar. 2024 17:12:23
  */
 
 package com.equipo02.hotel.domain;
@@ -28,9 +28,6 @@ import jakarta.persistence.OneToMany;
 //import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 
-/**
- * Clase que representa un huesped en la persistencia
- */
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "idHuesped")
 public class Huesped {
@@ -57,7 +54,6 @@ public class Huesped {
 	@OneToMany(mappedBy = "huesped")
 	@JsonManagedReference
 	private List<Reserva> reservas = new ArrayList<>();
-	
 	
 	public Long getIdHuesped() {
 		return idHuesped;
@@ -114,8 +110,12 @@ public class Huesped {
 	public void setAval(Huesped aval) {
 		this.aval = aval;
 	}
-
-	public List<Reserva> getReservas() { return reservas; }
-	public void setReservas(List<Reserva> reservas) { this.reservas = reservas; }
 	
+	public List<Reserva> getReservas() {
+		return reservas;
+	}
+	
+	public void setReservas(List<Reserva> reservas) {
+		this.reservas = reservas;
+	}
 }

@@ -1,12 +1,19 @@
+/**
+ * @file: HuespedDTO.java
+ * @author: (c)2024 Rodriguez
+ * @created: 3 mar. 2024 17:21:05
+ */
+
 package com.equipo02.hotel.dto;
 
-/*import java.util.ArrayList;
-import java.util.List;*/
+import java.util.ArrayList;
+import java.util.List;
 
 import com.equipo02.hotel.domain.Huesped;
+import com.equipo02.hotel.domain.Reserva;
 
 public class HuespedDTO {
-	
+
 	private Long idHuesped;
 	private String dniHuesped;
 	private String nombreHuesped;
@@ -14,8 +21,7 @@ public class HuespedDTO {
 	private String telefonoHuesped;
 	private String correoHuesped;
 	private Huesped aval;
-	
-	//private List<Reserva> reservas = new ArrayList()<>();
+	private List<Reserva> reservas = new ArrayList<>();
 
 	public Long getIdHuesped() {
 		return idHuesped;
@@ -73,9 +79,12 @@ public class HuespedDTO {
 		this.aval = aval;
 	}
 
-	/*
-	 * public List<Reserva> getReservas() { return reservas; }
-	 * 
-	 * public void setReservas(List<Reserva> reservas) { this.reservas = reservas; }
-	 */
+	public List<Reserva> getReservas() {
+		return reservas;
+	}
+
+	public void setReservas(List<Reserva> reservas) {
+		this.reservas = reservas;
+	}
+
 }
