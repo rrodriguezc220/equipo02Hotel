@@ -133,8 +133,11 @@ public class ReservaServiceImp implements ReservaService {
 	    Optional<Habitacion> optionalHabitacion = habitacionRepository.findById(idHabitacion);
 	    if (optionalHabitacion.isEmpty()) {
 	        throw new EntityNotFoundException(ErrorMessage.HABITACION_NOT_FOUND);
-	    }
+	    }	    
 	    Habitacion habitacion = optionalHabitacion.get();
+	    if (reserva.getHabitaciones().contains(habitacion)) {
+	        throw new IllegalOperationException("La habitación ya está asignada a la reserva");
+	    }
 	    reserva.getHabitaciones().add(habitacion);
 	    return reservaRepository.save(reserva);
 	}

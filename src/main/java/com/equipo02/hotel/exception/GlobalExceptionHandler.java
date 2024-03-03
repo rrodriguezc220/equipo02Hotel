@@ -25,5 +25,14 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
     }
 	
+	@ExceptionHandler(IllegalOperationException.class)
+    public ResponseEntity<ErrorMessage> handleIllegalOperationException(IllegalOperationException ex, WebRequest request) {
+        
+		ErrorMessage message = new ErrorMessage(HttpStatus.NOT_FOUND,
+				ex.getMessage(),
+				request.getDescription(false));
+		
+        return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+    }
 
 }
