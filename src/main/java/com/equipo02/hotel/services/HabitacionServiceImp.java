@@ -99,6 +99,13 @@ public class HabitacionServiceImp implements HabitacionService {
 		    }
 		habitacionRepository.deleteById(idHabitacion);
 	}
+	/**
+	 * Método para actualizar los campos de una habitación existente.
+	 * @param id El ID de la habitación a actualizar.
+	 * @param habitacion La habitación con los nuevos datos.
+	 * @return La habitación actualizada.
+	 * @throws EntityNotFoundException si no se encuentra una habitación con el ID proporcionado.
+	 */
 	@Override
 	@Transactional
 	public Habitacion actualizarCampoHabitacion(Long id, Habitacion habitacion) throws EntityNotFoundException{
