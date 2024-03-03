@@ -33,6 +33,11 @@ import com.equipo02.hotel.util.ApiResponse;
 @RestController
 @RequestMapping("/api/habitaciones")
 public class HabitacionController {
+	/**
+	 * 
+	 * 
+	 * 
+	 */
 	@Autowired
 	private HabitacionService habitacionService;
 	
