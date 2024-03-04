@@ -28,33 +28,63 @@ import jakarta.persistence.OneToMany;
 //import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 
+/**
+ * Clase que representa un Huesped en la persistencia
+ */
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "idHuesped")
 public class Huesped {
 
+	/**
+     * Identificador único del huesped.
+     */
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long idHuesped;
 	
+	/**
+     * DNI único del huesped.
+     */
 	@Column(unique = true)
 	private String dniHuesped;
 	
+	/**
+     * Nombre del huesped.
+     */
 	private String nombreHuesped;
 	
+	/**
+     * Dirección del huesped.
+     */
 	private String direccionHuesped;
 	
+	/**
+     * Teléfono del huesped.
+     */
 	private String telefonoHuesped;
 	
+	/**
+     * Correo del huesped.
+     */
 	private String correoHuesped;
 	
+	/**
+     * Aval asociado al huesped.
+     */
 	@OneToOne
     @JoinColumn(name = "idAval")
 	private Huesped aval;
 	
+	/**
+     * Reservas asociado al huesped.
+     */
 	@OneToMany(mappedBy = "huesped")
 	@JsonManagedReference
 	private List<Reserva> reservas = new ArrayList<>();
 	
+	/**
+     * Métodos getters y setters para acceder y modificar los atributos de la clase Huesped.
+     */
 	public Long getIdHuesped() {
 		return idHuesped;
 	}

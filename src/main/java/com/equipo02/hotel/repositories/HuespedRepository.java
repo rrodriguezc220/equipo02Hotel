@@ -13,8 +13,26 @@ import org.springframework.stereotype.Repository;
 
 import com.equipo02.hotel.domain.Huesped;
 
+/**
+ * Repositorio para la entidad Huesped, proporciona operaciones CRUD básicas y operaciones de búsqueda.
+ * Extiende JpaRepository que proporciona métodos para acceder y modificar los datos de la entidad Huesped en la base de datos.
+ */
 @Repository
 public interface HuespedRepository extends JpaRepository<Huesped, Long> {
+	
+	/**
+	 * Busca una lista de huéspedes por su nombre.
+	 * 
+	 * @param nombreHuesped El nombre del huésped a buscar.
+	 * @return Una lista de huéspedes que coinciden con el nombre proporcionado.
+	 */
 	List<Huesped> findByNombreHuesped(String nombreHuesped);
+	
+	/**
+	 * Busca una lista de huéspedes por su aval.
+	 * 
+	 * @param aval El huésped que actúa como aval.
+	 * @return Una lista de huéspedes que tienen el aval proporcionado.
+	 */
 	List<Huesped> findByAval(Huesped aval);
 }
