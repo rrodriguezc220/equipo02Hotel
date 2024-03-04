@@ -14,7 +14,7 @@ import com.equipo02.hotel.domain.Habitacion;
 import com.equipo02.hotel.domain.Huesped;
 
 /**
- * 
+ * DTO (Data Transfer Object) que representa una reserva en el hotel.
  */
 public class ReservaDTO {
 	
@@ -26,17 +26,15 @@ public class ReservaDTO {
     private Date fechaFin;
     /** Estado de la reserva. */
     private boolean estado;
-    
-    
+    /** Huesped asociado a la reserva. */
     private Huesped huesped;
+    /** Empleado asociado a la reserva. */
     private Empleado empleado;    
-    private List<Habitacion> habitaciones = new ArrayList<Habitacion>();
+    /** Lista de habitaciones asociadas a la reserva. */
+    private List<Habitacion> habitaciones = new ArrayList<>();
 
+    // Getters y setters
     
-    
-    /**
-     * Métodos getters y setters para acceder y modificar los atributos de la clase Reserva.
-     */
 	public Long getIdReserva() {
 		return idReserva;
 	}

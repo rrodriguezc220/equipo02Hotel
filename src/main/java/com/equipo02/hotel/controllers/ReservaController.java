@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.equipo02.hotel.domain.Reserva;
 import com.equipo02.hotel.dto.ReservaDTO;
+import com.equipo02.hotel.exception.BadRequestException;
 import com.equipo02.hotel.exception.EntityNotFoundException;
 import com.equipo02.hotel.exception.IllegalOperationException;
 import com.equipo02.hotel.services.ReservaService;
@@ -62,9 +64,8 @@ public class ReservaController {
      * @return ResponseEntity con la reserva encontrada y un mensaje de éxito.
      * @throws EntityNotFoundException si la reserva no se encuentra.
     */
-    
     @GetMapping("/{id}")
-    public ResponseEntity<?> buscarPorIdReserva(@PathVariable Long id) throws EntityNotFoundException{
+    public ResponseEntity<?> buscarPorIdReserva(@PathVariable Long id) throws EntityNotFoundException, BadRequestException{
     	Reserva reserva = reservaService.buscarPorIdReserva(id);
     	ReservaDTO reservaDTO = modelMapper.map(reserva, ReservaDTO.class);
 		ApiResponse<ReservaDTO> response = new ApiResponse<>(true, "Reserva obtenida con éxito.", reservaDTO);
@@ -73,15 +74,12 @@ public class ReservaController {
     
     
     /**
-     * Actualiza una reserva existente.
+     * Agrega una reserva a la persistencia.
      *
-     * @param id: El id de la reserva a actualizar.
      * @param reservaDTO: La nueva información de la reserva.
-     * @return ResponseEntity con la reserva actualizada y un mensaje de éxito.
-     * @throws EntityNotFoundException    si la reserva no se encuentra.
+     * @return ResponseEntity con la reserva agregada y un mensaje de éxito.
      * @throws IllegalOperationException si la operación no es válida.
      */
-    
     @PostMapping()
 	public ResponseEntity<?> guardarReserva(@RequestBody ReservaDTO reservaDTO) throws IllegalOperationException {
 		Reserva reserva = modelMapper.map(reservaDTO, Reserva.class);
@@ -110,6 +108,25 @@ public class ReservaController {
     }
     
     /**
+     * Actualiza un campo específico de una reserva.
+     *
+     * @param id: El id de la reserva a actualizar.
+     * @param reservaDTO: La nueva información de la reserva.
+     * @return ResponseEntity con la reserva actualizada y un mensaje de éxito.
+     * @throws EntityNotFoundException    si la reserva no se encuentra.
+     * @throws IllegalOperationException si la operación no es válida.
+     */
+    @PatchMapping("/{id}")
+	public ResponseEntity<?> actualizarCampoReserva(@PathVariable Long id, @RequestBody ReservaDTO reservaDTO) throws EntityNotFoundException, IllegalOperationException{
+		Reserva reserva = modelMapper.map(reservaDTO, Reserva.class);
+    	reservaService.actualizarCampoReserva(id, reserva);
+		
+    	ReservaDTO updateReservaDTO = modelMapper.map(reserva, ReservaDTO.class);
+		ApiResponse<ReservaDTO> response = new ApiResponse<>(true, "Reserva actualizada con éxito", updateReservaDTO);
+		return ResponseEntity.ok(response);
+	}
+    
+    /**
      * Elimina una reserva por su id.
      *
      * @param id: El id de la reserva a eliminar.
@@ -123,7 +140,6 @@ public class ReservaController {
     	ApiResponse<String> response = new ApiResponse<>(true, "Reserva eliminada con éxito", null);
 		return ResponseEntity.ok(response);
 	}
-    
     
     /**
      * Asigna una habitación a una reserva.

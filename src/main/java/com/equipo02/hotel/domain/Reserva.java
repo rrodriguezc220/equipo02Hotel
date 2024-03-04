@@ -27,8 +27,6 @@ import jakarta.persistence.TemporalType;
 /**
  * Clase que representa una reserva en la persistencia
  */
-
-
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,property = "idReserva")
 public class Reserva {
@@ -57,7 +55,6 @@ public class Reserva {
     /**
      * Estado de la reserva (activa/inactiva).
      */
-    
     private boolean estado;
     
     /**
