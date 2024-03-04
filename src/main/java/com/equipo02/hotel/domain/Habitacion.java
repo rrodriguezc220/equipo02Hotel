@@ -6,10 +6,12 @@
  *
  */
 package com.equipo02.hotel.domain;
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -39,12 +41,20 @@ public class Habitacion {
 	  * Indica si la habitación está disponible o no.
 	  */
 	 private boolean disponible;
-	 
+	 /**
+	  * precio de la habitacion
+	  */
+	 private BigDecimal precio;
+	 /**
+	  * decripcionde la habitacion
+	  */
+	 private String descripcion;
 	 /**
 	  * Lista de reservas asociadas a la habitación.
 	  */
 	@ManyToMany(mappedBy = "habitaciones")
     @JsonBackReference
+	//@JsonManagedReference
 	private List<Reserva> reservas;
 	
     /**
@@ -67,5 +77,25 @@ public class Habitacion {
 	}
 	public void setDisponible(boolean disponible) {
 		this.disponible = disponible;
+	}
+	
+	public BigDecimal getPrecio() {
+		return precio;
+	}
+	public void setPrecio(BigDecimal precio) {
+		this.precio = precio;
+	}
+	public String getDescripcion() {
+		return descripcion;
+	}
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
+	public List<Reserva> getReservas() {
+	    return reservas;
+	}
+
+	public void setReservas(List<Reserva> reservas) {
+	    this.reservas = reservas;
 	}
 }

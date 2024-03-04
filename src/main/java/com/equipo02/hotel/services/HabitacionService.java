@@ -9,6 +9,7 @@ package com.equipo02.hotel.services;
 import java.util.List;
 
 import com.equipo02.hotel.domain.Habitacion;
+import com.equipo02.hotel.domain.Huesped;
 import com.equipo02.hotel.exception.EntityNotFoundException;
 import com.equipo02.hotel.exception.IllegalOperationException;
 /**
@@ -50,4 +51,6 @@ public interface HabitacionService {
      * @throws IllegalOperationException si ocurre un error al eliminar la habitación.
      */
     void eliminarHabitacion(Long id) throws EntityNotFoundException, IllegalOperationException;
+    
+    Habitacion actualizarCampoHabitacion(Long id, Habitacion habitacion) throws EntityNotFoundException;
 }

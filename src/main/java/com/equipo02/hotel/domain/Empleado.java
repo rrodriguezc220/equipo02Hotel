@@ -23,22 +23,43 @@ import jakarta.persistence.OneToMany;
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "idEmpleado")
 public class Empleado {
+	
+	/**
+	  * Identificador único del empleado.
+	  */
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long idEmpleado;
 	
+	/**
+	  * DNI del empleado
+	  */
 	@Column(unique = true)
 	private String dniEmpleado;
 	
+	/**
+	  * Nombre del empleado
+	  */
 	private String nombreEmpleado;
 	
+	/**
+	  * Direccipon del empleado
+	  */
 	private String direccionEmpleado;
 	
+	/**
+	  * Teléfono del empleado
+	  */
 	private String telefonoEmpleado;
 	
+	/**
+	  * Correo del empleado
+	  */
 	private String correoEmpleado;
 	
-	
+	/**
+	  * Lista de reservas asociadas al empleado
+	  */
     @OneToMany(mappedBy = "empleado")
 	private List<Reserva> reservas = new ArrayList<>();
 	
@@ -50,7 +71,7 @@ public class Empleado {
 	public void setIdEmpleado(Long idEmpleado) {
 		this.idEmpleado = idEmpleado;
 	}
-
+	
 	public String getDniEmpleado() {
 		return dniEmpleado;
 	}
@@ -91,7 +112,6 @@ public class Empleado {
 		this.correoEmpleado = correoEmpleado;
 	}
 
-	
 	public List<Reserva> getReservas() {
 		return reservas;
 	}

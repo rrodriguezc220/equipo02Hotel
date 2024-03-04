@@ -1,0 +1,9 @@
+com.evc.administracion.rrhh
+com.evc.administracion.rrhh.config
+com.evc.administracion.rrhh.controllers
+com.evc.administracion.rrhh.domain
+com.evc.administracion.rrhh.dto
+com.evc.administracion.rrhh.exception
+com.evc.administracion.rrhh.repositories
+com.evc.administracion.rrhh.services
+com.evc.administracion.rrhh.util
