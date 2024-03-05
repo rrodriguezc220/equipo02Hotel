@@ -9,6 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.equipo02.hotel.domain.Reserva;
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 /**
  * Clase que representa un Empleado en el dominio del hotel en forma de DTO (Data Transfer Object).
  */
@@ -22,26 +27,38 @@ public class EmpleadoDTO {
 	/**
      * DNI del empleado.
      */
+	
+	@NotBlank(message = "El DNI no puede estar en blanco")
+    @Size(min = 8, max = 8, message = "El DNI debe tener exactamente 8 caracteres")
+	@Pattern(regexp = "[0-9]{8}", message = "Formato de DNI no válido")
 	private String dniEmpleado;
 	
 	/**
      * Nombre completo del empleado.
      */
+	
+	@NotBlank(message = "El nombre del empleado no puede estar en blanco")
 	private String nombreEmpleado;
 	
 	/**
      * Direccion del empleado.
      */
+	@NotBlank(message = "La direccion del empleado no puede estar en blanco")
 	private String direccionEmpleado;
 	
 	/**
      * Telefono del empleado.
      */
+	@NotBlank(message = "El telefono del empleado no puede estar en blanco")
+	@Size(min = 9, max = 9, message = "El telefono debe tener exactamente 9 caracteres")
+	@Pattern(regexp = "[0-9]{9}", message = "Formato de telefono no válido")
 	private String telefonoEmpleado;
 	
 	/**
      * Correo del empleado.
      */
+	@NotBlank(message = "El correo del empleado no puede estar en blanco")
+	@Email(message = "Debe ser una dirección de correo electrónico válida")
 	private String correoEmpleado;
 	//private Empleado supervisor;
 	/**

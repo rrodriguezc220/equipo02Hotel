@@ -14,7 +14,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.equipo02.hotel.domain.Empleado;
+import com.equipo02.hotel.domain.Habitacion;
 import com.equipo02.hotel.domain.Huesped;
+import com.equipo02.hotel.domain.Reserva;
 import com.equipo02.hotel.exception.EntityNotFoundException;
 import com.equipo02.hotel.exception.ErrorMessage;
 import com.equipo02.hotel.exception.IllegalOperationException;
@@ -53,21 +55,23 @@ public class EmpleadoServiceImp implements EmpleadoService {
 			throw new EntityNotFoundException(ErrorMessage.EMPLEADO_NOT_FOUND) ;
 		return empleado.get();
 	}
+	
 	/**
      * Método para guardar un nuevo empleado.
      * @param empleado Un objeto Empleado que representa el Empleado a guardar.
      * @return Un objeto Empleado que representa el empleado guardado.
      * @throws IllegalOperationException si ocurre un error al guardar el empleado.
      */
-	
 	@Override
 	@Transactional
 	public Empleado grabar(Empleado empleado) throws IllegalOperationException {
-		if(empleado.getNombreEmpleado().isBlank()) {
-			throw new IllegalOperationException("El nombre del empleado no debe estar en blanco");
+		
+		Empleado empleadoDni = empleadoRep.findByDniEmpleado(empleado.getDniEmpleado());
+		if(empleadoDni != null) {
+			throw new IllegalOperationException("El dni del empleado ya existe");
 		}
 		return empleadoRep.save(empleado);
-		}
+	}
 
 	/**
      * Método para actualizar los detalles de un empleado existente.
@@ -108,8 +112,8 @@ public class EmpleadoServiceImp implements EmpleadoService {
 	/**
 	 * Método para actualizar los campos de un empleado existente.
 	 * @param id El ID de la empleado a actualizar.
-	 * @param El empleado con los nuevos datos.
-	 * @return El empleado actualizada.
+	 * @param empleadoDTO Objeto DTO que contiene los campos actualizados del empleado.
+	 * @return ResponseEntity con un ApiResponse que contiene un mensaje de éxito junto con el empleado actualizado, junto con el código de estado HTTP 200 (OK) en caso de éxito.
 	 * @throws EntityNotFoundException si no se encuentra un empleado con el ID proporcionado.
 	 */
 	@Override
@@ -136,6 +140,30 @@ public class EmpleadoServiceImp implements EmpleadoService {
 			empleado.setCorreoEmpleado(empleadoEntity.get().getCorreoEmpleado());
 		}		
 		return empleadoRep.save(empleado);
+	}
+
+	
+	/**
+	 * Método para obtener una reserva específica de un empleado.
+	 *
+	 * @param idEmpleado El ID del Empleado.
+	 * @param idReserva El ID de la reserva.
+	 * @return La reserva solicitada.
+	 * @throws EntityNotFoundException Si no se encuentra la reserva en el Empleado.
+	 *
+	 * Este método busca una habitación por su ID y luego busca una reserva específica dentro de las reservas de ese Empleado.
+	 * Si la reserva no se encuentra en el Empleado, se lanza una excepción.
+	 */
+	@Override
+	public Reserva obtenerReservaDeEmpleado(Long idEmpleado, Long idReserva) throws EntityNotFoundException {
+		Empleado empleado= buscarPorId(idEmpleado);
+	    Optional<Reserva> optionalReserva = empleado.getReservas().stream()
+	            .filter(r -> r.getIdReserva().equals(idReserva))
+	            .findFirst();
+	    if (optionalReserva.isEmpty()) {
+	        throw new EntityNotFoundException("Reserva no encontrada en la habitación");
+	    }
+	    return optionalReserva.get();
 	}
 
 	/*@Override

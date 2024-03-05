@@ -62,8 +62,10 @@ public class Empleado {
 	  */
     @OneToMany(mappedBy = "empleado")
 	private List<Reserva> reservas = new ArrayList<>();
-	
-    
+
+    /**
+     * Métodos getters y setters para acceder y modificar los atributos de la clase Empleado.
+     */
 	public Long getIdEmpleado() {
 		return idEmpleado;
 	}
