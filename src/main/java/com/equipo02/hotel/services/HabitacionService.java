@@ -51,6 +51,12 @@ public interface HabitacionService {
      * @throws IllegalOperationException si ocurre un error al eliminar la habitación.
      */
     void eliminarHabitacion(Long id) throws EntityNotFoundException, IllegalOperationException;
-    
+    /**
+     *  Actualiza ciertos campos de un Habitacion existente.
+     * @param id El ID de la Habitación que se desea actualizar.
+     * @param habitacion Un objeto Habitacion que contiene los campos actualizados de la Habitación.
+     * @return Un objeto Habitacion que representa la Habitación actualizada.
+     * @throws EntityNotFoundException Si no se encuentra una Habitación con el ID proporcionado.
+     */
     Habitacion actualizarCampoHabitacion(Long id, Habitacion habitacion) throws EntityNotFoundException;
 }

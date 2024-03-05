@@ -30,6 +30,9 @@ import com.equipo02.hotel.exception.IllegalOperationException;
 import com.equipo02.hotel.services.HuespedService;
 import com.equipo02.hotel.util.ApiResponse;
 
+/**
+ * Controlador REST para manejar las operaciones relacionadas con los huéspedes.
+ */
 @RestController
 @RequestMapping("/api/huespedes")
 public class HuespedController {
@@ -40,6 +43,11 @@ public class HuespedController {
 	@Autowired
 	private ModelMapper modelMapper;
 
+	/**
+     * Obtiene todos los huéspedes.
+     * 
+     * @return Una respuesta HTTP que contiene la lista de huéspedes.
+     */
 	@GetMapping
 	public ResponseEntity<?> obtenerTodos(){
 		List<Huesped> huespedes = huespedService.listarHuespedes();
@@ -49,6 +57,13 @@ public class HuespedController {
 		return ResponseEntity.ok(response);
 	}
 
+	/**
+     * Obtiene un huésped por su ID.
+     * 
+     * @param id El ID del huésped.
+     * @return Una respuesta HTTP que contiene el huésped encontrado.
+     * @throws EntityNotFoundException Si el huésped no puede ser encontrado.
+     */
 	@GetMapping("/{id}")
 	public ResponseEntity<?> obtenerPorId(@PathVariable Long id) throws EntityNotFoundException {
 		Huesped huesped = huespedService.buscarPorId(id);
@@ -58,6 +73,12 @@ public class HuespedController {
 		return ResponseEntity.ok(response);
 	}
 
+	/**
+	 * Método para guardar un nuevo huésped.
+	 *
+	 * @param huespedDTO El objeto HuespedDTO que contiene la información del nuevo huésped.
+	 * @return ResponseEntity con un ApiResponse que contiene un mensaje de éxito y el DTO del huésped guardado, junto con el código de estado HTTP 201 (CREATED) en caso de éxito.
+	 */
 	@PostMapping
 	public ResponseEntity<?> guardar(@RequestBody HuespedDTO huespedDTO) {
 		Huesped huesped = modelMapper.map(huespedDTO, Huesped.class);
@@ -68,6 +89,14 @@ public class HuespedController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
 
+	/**
+	 * Método para actualizar la información de un huésped existente.
+	 *
+	 * @param id El ID del huésped que se actualizará.
+	 * @param huespedDTO El objeto HuespedDTO que contiene la información actualizada del huésped.
+	 * @return ResponseEntity con un ApiResponse que contiene un mensaje de éxito y el DTO del huésped actualizado, junto con el código de estado HTTP 200 (OK) en caso de éxito.
+	 * @throws EntityNotFoundException Si el huésped con el ID proporcionado no se encuentra en la base de datos.
+	 */
 	@PutMapping("/{id}")
 	public ResponseEntity<?> actualizar(@PathVariable Long id, @RequestBody HuespedDTO huespedDTO) throws EntityNotFoundException{
 		Huesped huesped = modelMapper.map(huespedDTO, Huesped.class);
@@ -78,6 +107,14 @@ public class HuespedController {
 		return ResponseEntity.ok(response);
 	}
 
+	/**
+	 * Método para eliminar un huésped existente de la base de datos.
+	 *
+	 * @param id El ID del huésped que se eliminará.
+	 * @return ResponseEntity con un ApiResponse que contiene un mensaje de éxito y nulo, junto con el código de estado HTTP 200 (OK) en caso de éxito.
+	 * @throws EntityNotFoundException Si el huésped con el ID proporcionado no se encuentra en la base de datos.
+	 * @throws IllegalOperationException Si el huésped que se intenta eliminar es aval de otro huésped, lo cual no está permitido.
+	 */
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> eliminar(@PathVariable Long id) throws EntityNotFoundException, IllegalOperationException{
 		huespedService.eliminar(id);
@@ -85,6 +122,15 @@ public class HuespedController {
 		return ResponseEntity.ok(response);
 	}
 	
+	/**
+	 * Método para asignar un aval a un huésped existente en la base de datos.
+	 *
+	 * @param idHuesped El ID del huésped al que se le asignará el aval.
+	 * @param idAval El ID del huésped que actuará como aval.
+	 * @return ResponseEntity con un ApiResponse que contiene un mensaje de éxito junto con el huésped actualizado con su nuevo aval, junto con el código de estado HTTP 200 (OK) en caso de éxito.
+	 * @throws EntityNotFoundException Si alguno de los huéspedes con los IDs proporcionados no se encuentra en la base de datos.
+	 * @throws IllegalOperationException Si se intenta asignar como aval al mismo huésped o si el huésped que se intenta eliminar es aval de otro huésped.
+	 */
 	@PatchMapping("/{idHuesped}/aval/{idAval}")
 	public ResponseEntity<?> asignarAval(@PathVariable Long idHuesped, @PathVariable Long idAval) throws EntityNotFoundException, IllegalOperationException{
 		Huesped huesped = huespedService.asignarAval(idHuesped, idAval);
@@ -93,6 +139,14 @@ public class HuespedController {
 		return ResponseEntity.ok(response);
 	}
 	
+	/**
+	 * Método para eliminar el aval de un huésped existente en la base de datos.
+	 *
+	 * @param idHuesped El ID del huésped del que se eliminará el aval.
+	 * @return ResponseEntity con un ApiResponse que contiene un mensaje de éxito junto con el huésped actualizado sin aval, junto con el código de estado HTTP 200 (OK) en caso de éxito.
+	 * @throws EntityNotFoundException Si el huésped con el ID proporcionado no se encuentra en la base de datos.
+	 * @throws IllegalOperationException Si el huésped no tiene asignado un aval para eliminar.
+	 */
 	@PatchMapping("/aval/{idHuesped}")
 	public ResponseEntity<?> eliminarAval(@PathVariable Long idHuesped) throws EntityNotFoundException, IllegalOperationException{
 		Huesped huesped = huespedService.eliminarAval(idHuesped);
@@ -101,10 +155,19 @@ public class HuespedController {
 		return ResponseEntity.ok(response);
 	}
 	
+	/**
+	 * Método para actualizar los campos de un huésped existente en la base de datos.
+	 *
+	 * @param idHuesped El ID del huésped que se actualizará.
+	 * @param huespedDTO Objeto DTO que contiene los campos actualizados del huésped.
+	 * @return ResponseEntity con un ApiResponse que contiene un mensaje de éxito junto con el huésped actualizado, junto con el código de estado HTTP 200 (OK) en caso de éxito.
+	 * @throws EntityNotFoundException Si el huésped con el ID proporcionado no se encuentra en la base de datos.
+	 * @throws IllegalOperationException Si se intenta asignar un aval a sí mismo como aval o si no se encuentra el aval proporcionado.
+	 */
 	@PatchMapping("/{idHuesped}")
-	public ResponseEntity<?> asignarAval(@PathVariable Long idHuesped, @RequestBody HuespedDTO huespedDTO) throws EntityNotFoundException, IllegalOperationException{
+	public ResponseEntity<?> actualizarPorCampos(@PathVariable Long idHuesped, @RequestBody HuespedDTO huespedDTO) throws EntityNotFoundException, IllegalOperationException{
 		Huesped huesped = modelMapper.map(huespedDTO, Huesped.class);
-		huespedService.actualizarNombre(idHuesped, huesped);
+		huespedService.actualizarPorCampos(idHuesped, huesped);
 
 		HuespedDTO updatedHuespedDTO = modelMapper.map(huesped, HuespedDTO.class);
 		ApiResponse<HuespedDTO> response = new ApiResponse<>(true, "Huesped actualizado con éxito", updatedHuespedDTO);

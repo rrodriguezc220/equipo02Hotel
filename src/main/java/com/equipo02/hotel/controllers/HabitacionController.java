@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -116,5 +117,22 @@ public class HabitacionController {
     	ApiResponse<String> response = new ApiResponse<>(true, "Habitación eliminada con éxito", null);
 		return ResponseEntity.ok(response);
 	}
+    /**
+     * Método para actualizar los campos de una habitación.
+     * @param idHabitacion El ID de la habitación que se va a actualizar.
+     * @param habitacionDTO Un objeto DTO que contiene los nuevos datos de la habitación.
+     * @return Una respuesta HTTP que contiene el objeto DTO de la habitación actualizada.
+     * @throws EntityNotFoundException Si no se encuentra una habitación con el ID proporcionado.
+     */
+    @PatchMapping("/{idHabitacion}")
+    public ResponseEntity<?> actualizarCampoHabitacion(@PathVariable Long idHabitacion, @RequestBody HabitacionDTO habitacionDTO) throws EntityNotFoundException {
+        Habitacion habitacion = modelMapper.map(habitacionDTO, Habitacion.class);
+        habitacionService.actualizarCampoHabitacion(idHabitacion, habitacion);
+        
+        HabitacionDTO upHabitacionDTO = modelMapper.map(habitacion, HabitacionDTO.class);
+        ApiResponse<HabitacionDTO> response=new ApiResponse<>(true, "Habitacion actualizado con exito", upHabitacionDTO);
+        return ResponseEntity.ok(response);
+    }
+    
 }
 

@@ -22,6 +22,7 @@ import com.equipo02.hotel.repositories.HabitacionRepository;
 /**
  * Implementación de los servicios disponibles para la entidad Habitacion.
  */
+
 @Service
 public class HabitacionServiceImp implements HabitacionService {
 

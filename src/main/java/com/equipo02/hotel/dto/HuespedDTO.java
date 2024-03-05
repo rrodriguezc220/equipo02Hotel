@@ -12,17 +12,47 @@ import java.util.List;
 import com.equipo02.hotel.domain.Huesped;
 import com.equipo02.hotel.domain.Reserva;
 
+/**
+ * DTO (Data Transfer Object) que representa un huesped del hotel.
+ */
 public class HuespedDTO {
 
+	/**
+     * Identificador único del huesped.
+     */
 	private Long idHuesped;
+	/**
+     * DNI único del huesped.
+     */
 	private String dniHuesped;
+	/**
+     * Nombre del huesped.
+     */
 	private String nombreHuesped;
+	/**
+     * Dirección del huesped.
+     */
 	private String direccionHuesped;
+	/**
+     * Teléfono del huesped.
+     */
 	private String telefonoHuesped;
+	/**
+     * Correo del huesped.
+     */
 	private String correoHuesped;
+	/**
+     * Aval asociado al huesped.
+     */
 	private Huesped aval;
+	/**
+     * Reservas asociado al huesped.
+     */
 	private List<Reserva> reservas = new ArrayList<>();
 
+	/**
+     * Métodos getters y setters para acceder y modificar los atributos de la clase Huesped.
+     */
 	public Long getIdHuesped() {
 		return idHuesped;
 	}
