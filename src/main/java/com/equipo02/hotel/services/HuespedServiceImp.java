@@ -67,11 +67,13 @@ public class HuespedServiceImp implements HuespedService {
 	}
 
 	/**
-     * Guarda un nuevo huésped en la base de datos.
-     * 
-     * @param huesped El huésped que se va a guardar.
-     * @return El huésped guardado.
-     */
+	 * Graba un nuevo huésped en la base de datos.
+	 * 
+	 * @param huesped El huésped a grabar.
+	 * @return El huésped grabado.
+	 * @throws EntityNotFoundException Si el aval no puede ser encontrado.
+	 * @throws IllegalOperationException Si hay operaciones ilegales.
+	 */
 	@Override
 	@Transactional
 	public Huesped grabar(Huesped huesped) throws EntityNotFoundException, IllegalOperationException{
@@ -93,13 +95,14 @@ public class HuespedServiceImp implements HuespedService {
 	}
 
 	/**
-     * Actualiza un huésped existente en la base de datos.
-     * 
-     * @param id El ID del huésped que se va a actualizar.
-     * @param huesped El objeto Huesped con los nuevos datos para el huésped.
-     * @return El huésped actualizado.
-     * @throws EntityNotFoundException Si el huésped no puede ser encontrado.
-     */
+	 * Actualiza los datos de un huésped existente.
+	 * 
+	 * @param id El ID del huésped a actualizar.
+	 * @param huesped Los nuevos datos del huésped.
+	 * @return El huésped actualizado.
+	 * @throws EntityNotFoundException Si el huésped no puede ser encontrado.
+	 * @throws IllegalOperationException Si hay operaciones ilegales.
+	 */
 	@Override
 	@Transactional
 	public Huesped actualizar(Long id, Huesped huesped) throws EntityNotFoundException, IllegalOperationException{
@@ -129,12 +132,12 @@ public class HuespedServiceImp implements HuespedService {
 	}
 
 	/**
-     * Elimina un huésped de la base de datos.
-     * 
-     * @param id El ID del huésped que se va a eliminar.
-     * @throws EntityNotFoundException Si el huésped no puede ser encontrado.
-     * @throws IllegalOperationException Si el huésped es aval de otro huésped.
-     */
+	 * Elimina un huésped por su ID.
+	 * 
+	 * @param id El ID del huésped a eliminar.
+	 * @throws EntityNotFoundException Si el huésped no puede ser encontrado.
+	 * @throws IllegalOperationException Si hay operaciones ilegales.
+	 */
 	@Override
 	@Transactional
 	public void eliminar(Long id) throws EntityNotFoundException, IllegalOperationException{
@@ -152,14 +155,14 @@ public class HuespedServiceImp implements HuespedService {
 	}
 
 	/**
-     * Asigna un aval a un huésped.
-     * 
-     * @param idHuesped El ID del huésped al que se asignará el aval.
-     * @param idAval El ID del huésped que actuará como aval.
-     * @return El huésped con el aval asignado.
-     * @throws EntityNotFoundException Si el huésped o el aval no pueden ser encontrados.
-     * @throws IllegalOperationException Si se intenta asignar un huésped como aval de sí mismo.
-     */
+	 * Asigna un aval a un huésped.
+	 * 
+	 * @param idHuesped El ID del huésped al que se asignará el aval.
+	 * @param idAval El ID del huésped que actuará como aval.
+	 * @return El huésped con el aval asignado.
+	 * @throws EntityNotFoundException Si el huésped o el aval no pueden ser encontrados.
+	 * @throws IllegalOperationException Si hay operaciones ilegales.
+	 */
 	@Override
 	@Transactional
 	public Huesped asignarAval(Long idHuesped, Long idAval) throws EntityNotFoundException, IllegalOperationException{
@@ -183,13 +186,13 @@ public class HuespedServiceImp implements HuespedService {
 	}
 
 	/**
-     * Elimina el aval de un huésped.
-     * 
-     * @param id El ID del huésped del que se eliminará el aval.
-     * @return El huésped con el aval eliminado.
-     * @throws EntityNotFoundException Si el huésped no puede ser encontrado.
-     * @throws IllegalOperationException Si el huésped no tiene aval.
-     */
+	 * Elimina el aval de un huésped.
+	 * 
+	 * @param id El ID del huésped del que se eliminará el aval.
+	 * @return El huésped con el aval eliminado.
+	 * @throws EntityNotFoundException Si el huésped no puede ser encontrado.
+	 * @throws IllegalOperationException Si el huésped no tiene aval.
+	 */
 	@Override
 	@Transactional
 	public Huesped eliminarAval(Long id) throws EntityNotFoundException, IllegalOperationException{
@@ -205,13 +208,14 @@ public class HuespedServiceImp implements HuespedService {
 	}
 
 	/**
-     * Actualiza ciertos campos de un huésped existente.
-     * 
-     * @param id El ID del huésped cuyos campos se actualizarán.
-     * @param huesped El objeto Huesped que contiene los nuevos valores de los campos a actualizar.
-     * @return El huésped actualizado.
-     * @throws EntityNotFoundException Si el huésped no puede ser encontrado.
-     */
+	 * Actualiza ciertos campos de un huésped existente.
+	 * 
+	 * @param id El ID del huésped cuyos campos se actualizarán.
+	 * @param huesped El objeto Huesped que contiene los nuevos valores de los campos a actualizar.
+	 * @return El huésped actualizado.
+	 * @throws EntityNotFoundException Si el huésped no puede ser encontrado.
+	 * @throws IllegalOperationException Si hay operaciones ilegales, como asignar un huésped como aval de sí mismo.
+	 */
 	@Override
 	@Transactional
 	public Huesped actualizarPorCampos(Long id, Huesped huesped) throws EntityNotFoundException, IllegalOperationException{
@@ -277,6 +281,14 @@ public class HuespedServiceImp implements HuespedService {
 		return reservas;
     }
 	
+	/**
+	 * Obtiene una reserva específica de un huésped.
+	 *
+	 * @param idHuesped El ID del huésped.
+	 * @param idReserva El ID de la reserva.
+	 * @return La reserva solicitada.
+	 * @throws EntityNotFoundException Si el huésped o la reserva no pueden ser encontrados.
+	 */
 	@Override
     @Transactional
     public Reserva obtenerReservaDeHuesped(Long idHuesped, Long idReserva) throws EntityNotFoundException {
@@ -293,6 +305,14 @@ public class HuespedServiceImp implements HuespedService {
         return reserva.get();
     }
 	
+	/**
+	 * Obtiene las habitaciones asociadas a una reserva de un huésped.
+	 *
+	 * @param idHuesped El ID del huésped.
+	 * @param idReserva El ID de la reserva.
+	 * @return La lista de habitaciones asociadas a la reserva.
+	 * @throws EntityNotFoundException Si el huésped, la reserva o las habitaciones no pueden ser encontrados.
+	 */
 	@Override
 	@Transactional
 	public List<Habitacion> obtenerHabitacionesPorReserva(Long idHuesped, Long idReserva) throws EntityNotFoundException {
@@ -314,6 +334,15 @@ public class HuespedServiceImp implements HuespedService {
 		return habitaciones;
     }
 	
+	/**
+	 * Obtiene una habitación específica asociada a una reserva de un huésped.
+	 *
+	 * @param idHuesped El ID del huésped.
+	 * @param idReserva El ID de la reserva.
+	 * @param idHabitacion El ID de la habitación.
+	 * @return La habitación asociada a la reserva.
+	 * @throws EntityNotFoundException Si el huésped, la reserva o la habitación no pueden ser encontrados.
+	 */
 	@Override
     @Transactional
     public Habitacion obtenerHabitacionDeReserva(Long idHuesped, Long idReserva, Long idHabitacion) throws EntityNotFoundException {

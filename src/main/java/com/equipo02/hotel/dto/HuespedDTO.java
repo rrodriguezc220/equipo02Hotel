@@ -20,7 +20,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 /**
- * DTO (Data Transfer Object) que representa un huesped del hotel.
+ * Clase que representa un objeto de transferencia de datos (DTO) para un huésped del hotel.
  */
 public class HuespedDTO {
 

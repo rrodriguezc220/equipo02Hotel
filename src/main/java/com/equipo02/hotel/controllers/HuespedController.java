@@ -54,8 +54,8 @@ public class HuespedController {
 
 	/**
 	 * Obtiene todos los huéspedes.
-	 * 
-	 * @return Una respuesta HTTP que contiene la lista de huéspedes.
+	 *
+	 * @return Una ResponseEntity con el resultado de la operación.
 	 */
 	@GetMapping
 	public ResponseEntity<?> obtenerTodos(){
@@ -68,9 +68,9 @@ public class HuespedController {
 
 	/**
 	 * Obtiene un huésped por su ID.
-	 * 
-	 * @param id El ID del huésped.
-	 * @return Una respuesta HTTP que contiene el huésped encontrado.
+	 *
+	 * @param id El ID del huésped a obtener.
+	 * @return Una ResponseEntity con el resultado de la operación.
 	 * @throws EntityNotFoundException Si el huésped no puede ser encontrado.
 	 */
 	@GetMapping("/{id}")
@@ -83,10 +83,13 @@ public class HuespedController {
 	}
 
 	/**
-	 * Método para guardar un nuevo huésped.
+	 * Guarda un nuevo huésped.
 	 *
-	 * @param huespedDTO El objeto HuespedDTO que contiene la información del nuevo huésped.
-	 * @return ResponseEntity con un ApiResponse que contiene un mensaje de éxito y el DTO del huésped guardado, junto con el código de estado HTTP 201 (CREATED) en caso de éxito.
+	 * @param huespedDTO  DTO del huésped a guardar.
+	 * @param result Resultado del proceso de validación.
+	 * @return Una ResponseEntity con el resultado de la operación.
+	 * @throws EntityNotFoundException Si el huésped no puede ser encontrado.
+	 * @throws IllegalOperationException Si hay operaciones ilegales.
 	 */
 	@PostMapping
 	public ResponseEntity<?> guardar(@Valid @RequestBody HuespedDTO huespedDTO, BindingResult result) throws EntityNotFoundException, IllegalOperationException{
@@ -103,12 +106,14 @@ public class HuespedController {
 	}
 
 	/**
-	 * Método para actualizar la información de un huésped existente.
+	 * Actualiza un huésped por su ID.
 	 *
-	 * @param id El ID del huésped que se actualizará.
-	 * @param huespedDTO El objeto HuespedDTO que contiene la información actualizada del huésped.
-	 * @return ResponseEntity con un ApiResponse que contiene un mensaje de éxito y el DTO del huésped actualizado, junto con el código de estado HTTP 200 (OK) en caso de éxito.
-	 * @throws EntityNotFoundException Si el huésped con el ID proporcionado no se encuentra en la base de datos.
+	 * @param id El ID del huésped a actualizar.
+	 * @param huespedDTO DTO del huésped con los datos actualizados.
+	 * @param result Resultado del proceso de validación.
+	 * @return Una ResponseEntity con el resultado de la operación.
+	 * @throws EntityNotFoundException Si el huésped no puede ser encontrado.
+	 * @throws IllegalOperationException Si hay operaciones ilegales.
 	 */
 	@PutMapping("/{id}")
 	public ResponseEntity<?> actualizar(@Valid @RequestBody HuespedDTO huespedDTO, BindingResult result, @PathVariable Long id) throws EntityNotFoundException, IllegalOperationException{
@@ -125,12 +130,12 @@ public class HuespedController {
 	}
 
 	/**
-	 * Método para eliminar un huésped existente de la base de datos.
+	 * Elimina un huésped por su ID.
 	 *
-	 * @param id El ID del huésped que se eliminará.
-	 * @return ResponseEntity con un ApiResponse que contiene un mensaje de éxito y nulo, junto con el código de estado HTTP 200 (OK) en caso de éxito.
-	 * @throws EntityNotFoundException Si el huésped con el ID proporcionado no se encuentra en la base de datos.
-	 * @throws IllegalOperationException Si el huésped que se intenta eliminar es aval de otro huésped, lo cual no está permitido.
+	 * @param id El ID del huésped a eliminar.
+	 * @return Una ResponseEntity con el resultado de la operación.
+	 * @throws EntityNotFoundException   Si el huésped no puede ser encontrado.
+	 * @throws IllegalOperationException Si hay operaciones ilegales, como eliminar un huésped que es aval de otro.
 	 */
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> eliminar(@PathVariable Long id) throws EntityNotFoundException, IllegalOperationException{
@@ -140,13 +145,13 @@ public class HuespedController {
 	}
 
 	/**
-	 * Método para asignar un aval a un huésped existente en la base de datos.
+	 * Asigna un aval a un huésped.
 	 *
-	 * @param idHuesped El ID del huésped al que se le asignará el aval.
-	 * @param idAval El ID del huésped que actuará como aval.
-	 * @return ResponseEntity con un ApiResponse que contiene un mensaje de éxito junto con el huésped actualizado con su nuevo aval, junto con el código de estado HTTP 200 (OK) en caso de éxito.
-	 * @throws EntityNotFoundException Si alguno de los huéspedes con los IDs proporcionados no se encuentra en la base de datos.
-	 * @throws IllegalOperationException Si se intenta asignar como aval al mismo huésped o si el huésped que se intenta eliminar es aval de otro huésped.
+	 * @param idHuesped El ID del huésped al que se asignará el aval.
+	 * @param idAval    El ID del huésped que actuará como aval.
+	 * @return Una ResponseEntity con el resultado de la operación.
+	 * @throws EntityNotFoundException   Si el huésped no puede ser encontrado.
+	 * @throws IllegalOperationException Si hay operaciones ilegales, como asignar un huésped como aval de sí mismo.
 	 */
 	@PatchMapping("/{idHuesped}/aval/{idAval}")
 	public ResponseEntity<?> asignarAval(@PathVariable Long idHuesped, @PathVariable Long idAval) throws EntityNotFoundException, IllegalOperationException{
@@ -157,12 +162,12 @@ public class HuespedController {
 	}
 
 	/**
-	 * Método para eliminar el aval de un huésped existente en la base de datos.
+	 * Elimina el aval de un huésped.
 	 *
 	 * @param idHuesped El ID del huésped del que se eliminará el aval.
-	 * @return ResponseEntity con un ApiResponse que contiene un mensaje de éxito junto con el huésped actualizado sin aval, junto con el código de estado HTTP 200 (OK) en caso de éxito.
-	 * @throws EntityNotFoundException Si el huésped con el ID proporcionado no se encuentra en la base de datos.
-	 * @throws IllegalOperationException Si el huésped no tiene asignado un aval para eliminar.
+	 * @return Una ResponseEntity con el resultado de la operación.
+	 * @throws EntityNotFoundException   Si el huésped no puede ser encontrado.
+	 * @throws IllegalOperationException Si hay operaciones ilegales, como eliminar el aval de un huésped que no tiene uno.
 	 */
 	@PatchMapping("/aval/{idHuesped}")
 	public ResponseEntity<?> eliminarAval(@PathVariable Long idHuesped) throws EntityNotFoundException, IllegalOperationException{
@@ -173,13 +178,14 @@ public class HuespedController {
 	}
 
 	/**
-	 * Método para actualizar los campos de un huésped existente en la base de datos.
+	 * Actualiza ciertos campos de un huésped existente.
 	 *
-	 * @param idHuesped El ID del huésped que se actualizará.
-	 * @param huespedDTO Objeto DTO que contiene los campos actualizados del huésped.
-	 * @return ResponseEntity con un ApiResponse que contiene un mensaje de éxito junto con el huésped actualizado, junto con el código de estado HTTP 200 (OK) en caso de éxito.
-	 * @throws EntityNotFoundException Si el huésped con el ID proporcionado no se encuentra en la base de datos.
-	 * @throws IllegalOperationException Si se intenta asignar un aval a sí mismo como aval o si no se encuentra el aval proporcionado.
+	 * @param huespedDTO   El DTO del huésped con los campos a actualizar.
+	 * @param result       El resultado de la validación.
+	 * @param idHuesped    El ID del huésped a actualizar.
+	 * @return Una ResponseEntity con el resultado de la operación.
+	 * @throws EntityNotFoundException   Si el huésped no puede ser encontrado.
+	 * @throws IllegalOperationException Si hay alguna operación ilegal.
 	 */
 	@PatchMapping("/{idHuesped}")
 	public ResponseEntity<?> actualizarPorCampos(@Valid @RequestBody HuespedDTO huespedDTO, BindingResult result, @PathVariable Long idHuesped) throws EntityNotFoundException, IllegalOperationException{
@@ -197,6 +203,13 @@ public class HuespedController {
 
 	//Subservicios
 
+	/**
+	 * Obtiene las reservas de un huésped por su ID.
+	 *
+	 * @param id El ID del huésped.
+	 * @return Una ResponseEntity con la lista de reservas del huésped.
+	 * @throws EntityNotFoundException Si el huésped no puede ser encontrado.
+	 */
 	@GetMapping("/{id}/reservas")
 	public ResponseEntity<?> obtenerReservasPorHuesped(@PathVariable Long id) throws EntityNotFoundException {
 		List<Reserva> reservas = huespedService.obtenerReservasPorHuesped(id);
@@ -208,6 +221,14 @@ public class HuespedController {
 		return ResponseEntity.ok(response);
 	}
 
+	/**
+	 * Obtiene la reserva de un huésped por su ID de reserva.
+	 *
+	 * @param idHuesped El ID del huésped.
+	 * @param idReserva El ID de la reserva.
+	 * @return Una ResponseEntity con la reserva del huésped.
+	 * @throws EntityNotFoundException Si el huésped o la reserva no pueden ser encontrados.
+	 */
 	@GetMapping("/{idHuesped}/reservas/{idReserva}")
 	public ResponseEntity<?> obtenerReservasPorHuesped(@PathVariable Long idHuesped, @PathVariable Long idReserva) throws EntityNotFoundException {
 		Reserva reserva = huespedService.obtenerReservaDeHuesped(idHuesped, idReserva);
@@ -219,6 +240,14 @@ public class HuespedController {
 		return ResponseEntity.ok(response);
 	}
 
+	/**
+	 * Obtiene la lista de habitaciones de una reserva de un huésped.
+	 *
+	 * @param idHuesped El ID del huésped.
+	 * @param idReserva El ID de la reserva.
+	 * @return Una ResponseEntity con la lista de habitaciones de la reserva del huésped.
+	 * @throws EntityNotFoundException Si el huésped o la reserva no pueden ser encontrados.
+	 */
 	@GetMapping("/{idHuesped}/reservas/{idReserva}/habitaciones")
 	public ResponseEntity<?> obtenerHabitacionesDeReserva(@PathVariable Long idHuesped, @PathVariable Long idReserva) throws EntityNotFoundException {
 		List<Habitacion> habitaciones = huespedService.obtenerHabitacionesPorReserva(idHuesped, idReserva);
@@ -230,6 +259,15 @@ public class HuespedController {
 		return ResponseEntity.ok(response);
 	}
 
+	/**
+	 * Obtiene una habitación específica de una reserva de un huésped.
+	 *
+	 * @param idHuesped    El ID del huésped.
+	 * @param idReserva    El ID de la reserva.
+	 * @param idHabitacion El ID de la habitación.
+	 * @return Una ResponseEntity con la información de la habitación de la reserva del huésped.
+	 * @throws EntityNotFoundException Si el huésped, la reserva o la habitación no pueden ser encontrados.
+	 */
 	@GetMapping("/{idHuesped}/reservas/{idReserva}/habitaciones/{idHabitacion}")
 	public ResponseEntity<?> obtenerHabitacionDeReserva(@PathVariable Long idHuesped, @PathVariable Long idReserva, @PathVariable Long idHabitacion) throws EntityNotFoundException {
 		Habitacion habitacion = huespedService.obtenerHabitacionDeReserva(idHuesped, idReserva, idHabitacion);
@@ -241,7 +279,12 @@ public class HuespedController {
 		return ResponseEntity.ok(response);
 	}
 
-	/**Método auxiliar para manejar errores de validación*/
+	/**
+	 * Método auxiliar para manejar errores de validación.
+	 *
+	 * @param result El resultado de la validación.
+	 * @return Una respuesta ResponseEntity con el mapa de errores.
+	 */
 	private ResponseEntity<Map<String, String>> validar(BindingResult result) {
 		Map<String, String> errores = new HashMap<>();
 		result.getFieldErrors().forEach(err -> {

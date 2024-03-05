@@ -21,21 +21,27 @@ import com.equipo02.hotel.domain.Huesped;
 public interface HuespedRepository extends JpaRepository<Huesped, Long> {
 	
 	/**
-	 * Busca una lista de huéspedes por su nombre.
-	 * 
-	 * @param nombreHuesped El nombre del huésped a buscar.
-	 * @return Una lista de huéspedes que coinciden con el nombre proporcionado.
-	 */
+     * Busca una lista de huéspedes por su nombre.
+     *
+     * @param nombreHuesped El nombre del huésped a buscar.
+     * @return Una lista de huéspedes que coinciden con el nombre proporcionado.
+     */
 	List<Huesped> findByNombreHuesped(String nombreHuesped);
 	
 	/**
-	 * Busca una lista de huéspedes por su aval.
-	 * 
-	 * @param aval El huésped que actúa como aval.
-	 * @return Una lista de huéspedes que tienen el aval proporcionado.
-	 */
+     * Busca una lista de huéspedes por su aval.
+     *
+     * @param aval El huésped que actúa como aval.
+     * @return Una lista de huéspedes que tienen el aval proporcionado.
+     */
 	List<Huesped> findByAval(Huesped aval);
 	
+	/**
+     * Busca un huésped por su DNI.
+     *
+     * @param dniHuesped El DNI del huésped a buscar.
+     * @return El huésped que tiene el DNI proporcionado.
+     */
 	Huesped findByDniHuesped(String dniHuesped);
 	
 }
