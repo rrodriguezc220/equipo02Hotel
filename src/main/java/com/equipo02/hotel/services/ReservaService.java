@@ -6,6 +6,8 @@
 package com.equipo02.hotel.services;
 
 import java.util.List;
+
+import com.equipo02.hotel.domain.Habitacion;
 import com.equipo02.hotel.domain.Reserva;
 import com.equipo02.hotel.exception.EntityNotFoundException;
 import com.equipo02.hotel.exception.IllegalOperationException;
@@ -85,6 +87,14 @@ public interface ReservaService {
      */
     Reserva eliminarHabitacion(Long idReserva, Long idHabitacion) throws EntityNotFoundException, IllegalOperationException;
     
-    
+    /**
+	 * Obtiene una habitación específica de una reserva.
+	 *
+	 * @param idReserva    El id de la reserva.
+	 * @param idHabitacion El id de la habitación.
+	 * @return La habitación encontrada.
+	 * @throws EntityNotFoundException si la reserva o la habitación no se encuentra.
+	 */
+    Habitacion obtenerHabitacionDeReserva(Long idReserva, Long idHabitacion) throws EntityNotFoundException;
 }
 

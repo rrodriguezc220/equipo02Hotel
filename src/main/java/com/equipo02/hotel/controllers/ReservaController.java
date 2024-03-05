@@ -23,7 +23,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.equipo02.hotel.domain.Habitacion;
 import com.equipo02.hotel.domain.Reserva;
+import com.equipo02.hotel.dto.HabitacionDTO;
 import com.equipo02.hotel.dto.ReservaDTO;
 import com.equipo02.hotel.exception.BadRequestException;
 import com.equipo02.hotel.exception.EntityNotFoundException;
@@ -189,6 +192,7 @@ public class ReservaController {
         return ResponseEntity.ok(response);
     }
     
+    /**Método auxiliar para manejar errores de validación*/
     private ResponseEntity<Map<String, String>> validar(BindingResult result) {
         Map<String, String> errores = new HashMap<>();
         result.getFieldErrors().forEach(err -> {
@@ -196,6 +200,24 @@ public class ReservaController {
         });
         return ResponseEntity.badRequest().body(errores);
     }
+    
+    
+    /**
+     * Obtiene una habitación específica de una reserva.
+     *
+     * @param idReserva    El id de la reserva.
+     * @param idHabitacion El id de la habitación.
+     * @return ResponseEntity con la habitación encontrada y un mensaje de éxito.
+     * @throws EntityNotFoundException si la reserva o la habitación no se encuentran.
+     */
+    @GetMapping("/{idReserva}/habitaciones/{idHabitacion}")
+    public ResponseEntity<?> obtenerHabitacionDeReserva(@PathVariable Long idReserva, @PathVariable Long idHabitacion) throws EntityNotFoundException {
+        Habitacion habitacion = reservaService.obtenerHabitacionDeReserva(idReserva, idHabitacion);
+        HabitacionDTO habitacionDTO = modelMapper.map(habitacion, HabitacionDTO.class);
+        ApiResponse<HabitacionDTO> response = new ApiResponse<>(true, "Habitación obtenida con éxito.", habitacionDTO);
+        return ResponseEntity.ok(response);
+    }
+    
 
 }
 

@@ -245,7 +245,26 @@ public class ReservaServiceImp implements ReservaService {
 	}
 	
 	
-	
+	/**
+	 * Obtiene una habitación específica de una reserva.
+	 *
+	 * @param idReserva    El id de la reserva.
+	 * @param idHabitacion El id de la habitación.
+	 * @return La habitación encontrada.
+	 * @throws EntityNotFoundException si la reserva o la habitación no se encuentra.
+	 */
+	@Override
+	@Transactional(readOnly = true)
+	public Habitacion obtenerHabitacionDeReserva(Long idReserva, Long idHabitacion) throws EntityNotFoundException {
+	    Reserva reserva = buscarPorIdReserva(idReserva);
+	    Optional<Habitacion> optionalHabitacion = reserva.getHabitaciones().stream()
+	            .filter(h -> h.getIdHabitacion().equals(idHabitacion))
+	            .findFirst();
+	    if (optionalHabitacion.isEmpty()) {
+	        throw new EntityNotFoundException("Habitación no encontrada en la reserva");
+	    }
+	    return optionalHabitacion.get();
+	}
 	
 
 }
