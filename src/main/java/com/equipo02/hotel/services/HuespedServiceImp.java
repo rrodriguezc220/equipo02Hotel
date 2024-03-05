@@ -85,6 +85,10 @@ public class HuespedServiceImp implements HuespedService {
 				throw new IllegalOperationException("El aval ya fue designado");
 			}
 		}
+		Huesped huespedDni = huespedRep.findByDniHuesped(huesped.getDniHuesped());
+		if(huespedDni != null) {
+			throw new EntityNotFoundException("El dni del huesped ya existe");
+		}
 		return huespedRep.save(huesped);
 	}
 
@@ -115,6 +119,10 @@ public class HuespedServiceImp implements HuespedService {
 			if (!huespedesConEsteAval.isEmpty()) { 
 				throw new IllegalOperationException("El aval ya fue designado");
 			}
+		}
+		Huesped huespedDni = huespedRep.findByDniHuesped(huesped.getDniHuesped());
+		if(huespedDni != null) {
+			throw new EntityNotFoundException("El dni del huesped ya existe");
 		}
 		huesped.setIdHuesped(id);
 		return huespedRep.save(huesped);
@@ -217,6 +225,11 @@ public class HuespedServiceImp implements HuespedService {
 		} 
 		if(huesped.getDniHuesped() == null) {
 			huesped.setDniHuesped(huespedEntity.get().getDniHuesped());
+		} else {
+			Huesped huespedDni = huespedRep.findByDniHuesped(huesped.getDniHuesped());
+			if(huespedDni != null) {
+				throw new EntityNotFoundException("El dni del huesped ya existe");
+			}
 		}
 		if(huesped.getDireccionHuesped() == null) {
 			huesped.setDireccionHuesped(huespedEntity.get().getDireccionHuesped());

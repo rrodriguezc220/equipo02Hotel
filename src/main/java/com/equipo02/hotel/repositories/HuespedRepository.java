@@ -36,4 +36,6 @@ public interface HuespedRepository extends JpaRepository<Huesped, Long> {
 	 */
 	List<Huesped> findByAval(Huesped aval);
 	
+	Huesped findByDniHuesped(String dniHuesped);
+	
 }
