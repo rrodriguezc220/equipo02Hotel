@@ -22,8 +22,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 
-
-
 /**
  * Clase que representa una reserva en la persistencia
  */
@@ -48,7 +46,6 @@ public class Reserva {
      * Fecha de fin de la reserva.
      */
     @Temporal(TemporalType.DATE)
-    
     private Date fechaFin;
     
     

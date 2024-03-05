@@ -13,6 +13,9 @@ import com.equipo02.hotel.domain.Empleado;
 import com.equipo02.hotel.domain.Habitacion;
 import com.equipo02.hotel.domain.Huesped;
 
+import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.NotNull;
+
 /**
  * DTO (Data Transfer Object) que representa una reserva en el hotel.
  */
@@ -20,16 +23,29 @@ public class ReservaDTO {
 	
     /** Identificador único de la reserva. */
     private Long idReserva;
+    
     /** Fecha de inicio de la reserva. */
+    @NotNull(message = "no puede ser nula")
+    @Future
     private Date fechaInicio;
+    
     /** Fecha de fin de la reserva. */
+    @NotNull(message = "no puede ser nula")
+    @Future
     private Date fechaFin;
+    
     /** Estado de la reserva. */
+    @NotNull
     private boolean estado;
+    
     /** Huesped asociado a la reserva. */
+    @NotNull
     private Huesped huesped;
+    
     /** Empleado asociado a la reserva. */
+    @NotNull
     private Empleado empleado;    
+    
     /** Lista de habitaciones asociadas a la reserva. */
     private List<Habitacion> habitaciones = new ArrayList<>();
 

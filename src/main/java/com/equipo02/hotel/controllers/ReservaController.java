@@ -5,12 +5,15 @@
  */
 package com.equipo02.hotel.controllers;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -27,6 +30,8 @@ import com.equipo02.hotel.exception.EntityNotFoundException;
 import com.equipo02.hotel.exception.IllegalOperationException;
 import com.equipo02.hotel.services.ReservaService;
 import com.equipo02.hotel.util.ApiResponse;
+
+import jakarta.validation.Valid;
 
 /**
  * Controlador REST que maneja las operaciones relacionadas con las reservas en el hotel.
@@ -81,11 +86,14 @@ public class ReservaController {
      * @throws IllegalOperationException si la operación no es válida.
      */
     @PostMapping()
-	public ResponseEntity<?> guardarReserva(@RequestBody ReservaDTO reservaDTO) throws IllegalOperationException {
-		Reserva reserva = modelMapper.map(reservaDTO, Reserva.class);
+	public ResponseEntity<?> guardarReserva(@Valid @RequestBody ReservaDTO reservaDTO, BindingResult result) throws IllegalOperationException {
+    	if(result.hasErrors()) {
+			return validar(result);
+		}
+    	Reserva reserva = modelMapper.map(reservaDTO, Reserva.class);
 		reservaService.guardarReserva(reserva);
 		ReservaDTO savedReservaDTO = modelMapper.map(reserva, ReservaDTO.class);
-		ApiResponse<ReservaDTO> response = new ApiResponse<>(true, "Reserva guardada con éxit.o", savedReservaDTO);
+		ApiResponse<ReservaDTO> response = new ApiResponse<>(true, "Reserva guardada con éxito.", savedReservaDTO);
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
     
@@ -99,7 +107,10 @@ public class ReservaController {
      * @throws IllegalOperationException si la operación no es válida.
      */
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<ReservaDTO>> actualizarReserva(@PathVariable Long id, @RequestBody ReservaDTO reservaDTO) throws EntityNotFoundException, IllegalOperationException {
+    public ResponseEntity<?> actualizarReserva(@Valid @RequestBody ReservaDTO reservaDTO, BindingResult result, @PathVariable Long id) throws EntityNotFoundException, IllegalOperationException {
+    	if(result.hasErrors()) {
+			return validar(result);
+		}
     	Reserva reserva = modelMapper.map(reservaDTO, Reserva.class);
     	reservaService.actualizarReserva(id, reserva);
     	ReservaDTO updatedReservaDTO = modelMapper.map(reserva, ReservaDTO.class);
@@ -117,8 +128,11 @@ public class ReservaController {
      * @throws IllegalOperationException si la operación no es válida.
      */
     @PatchMapping("/{id}")
-	public ResponseEntity<?> actualizarCampoReserva(@PathVariable Long id, @RequestBody ReservaDTO reservaDTO) throws EntityNotFoundException, IllegalOperationException{
-		Reserva reserva = modelMapper.map(reservaDTO, Reserva.class);
+	public ResponseEntity<?> actualizarCampoReserva(@Valid @RequestBody ReservaDTO reservaDTO,BindingResult result, @PathVariable Long id) throws EntityNotFoundException, IllegalOperationException{
+    	if(result.hasErrors()) {
+			return validar(result);
+		}
+    	Reserva reserva = modelMapper.map(reservaDTO, Reserva.class);
     	reservaService.actualizarCampoReserva(id, reserva);
 		
     	ReservaDTO updateReservaDTO = modelMapper.map(reserva, ReservaDTO.class);
@@ -174,8 +188,15 @@ public class ReservaController {
         ApiResponse<ReservaDTO> response = new ApiResponse<>(true, "Habitación eliminada de la reserva con éxito.", reservaDTO);
         return ResponseEntity.ok(response);
     }
-
     
+    private ResponseEntity<Map<String, String>> validar(BindingResult result) {
+        Map<String, String> errores = new HashMap<>();
+        result.getFieldErrors().forEach(err -> {
+            errores.put(err.getField(), "El campo " + err.getField() + " " + err.getDefaultMessage());
+        });
+        return ResponseEntity.badRequest().body(errores);
+    }
+
 }
 
 
