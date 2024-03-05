@@ -87,7 +87,7 @@ public class HuespedServiceImp implements HuespedService {
 		}
 		Huesped huespedDni = huespedRep.findByDniHuesped(huesped.getDniHuesped());
 		if(huespedDni != null) {
-			throw new EntityNotFoundException("El dni del huesped ya existe");
+			throw new IllegalOperationException("El dni del huesped ya existe");
 		}
 		return huespedRep.save(huesped);
 	}
@@ -122,7 +122,7 @@ public class HuespedServiceImp implements HuespedService {
 		}
 		Huesped huespedDni = huespedRep.findByDniHuesped(huesped.getDniHuesped());
 		if(huespedDni != null) {
-			throw new EntityNotFoundException("El dni del huesped ya existe");
+			throw new IllegalOperationException("El dni del huesped ya existe");
 		}
 		huesped.setIdHuesped(id);
 		return huespedRep.save(huesped);
@@ -228,7 +228,7 @@ public class HuespedServiceImp implements HuespedService {
 		} else {
 			Huesped huespedDni = huespedRep.findByDniHuesped(huesped.getDniHuesped());
 			if(huespedDni != null) {
-				throw new EntityNotFoundException("El dni del huesped ya existe");
+				throw new IllegalOperationException("El dni del huesped ya existe");
 			}
 		}
 		if(huesped.getDireccionHuesped() == null) {
