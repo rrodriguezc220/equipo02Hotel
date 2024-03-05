@@ -130,6 +130,17 @@ public class HabitacionServiceImp implements HabitacionService {
 	    }
 	    return habitacionRepository.save(habitacion);
 	}
+	/**
+	 * Método para obtener una reserva específica de una habitación.
+	 *
+	 * @param idHabitacion El ID de la habitación.
+	 * @param idReserva El ID de la reserva.
+	 * @return La reserva solicitada.
+	 * @throws EntityNotFoundException Si no se encuentra la reserva en la habitación.
+	 *
+	 * Este método busca una habitación por su ID y luego busca una reserva específica dentro de las reservas de esa habitación.
+	 * Si la reserva no se encuentra en la habitación, se lanza una excepción.
+	 */
 	@Override
 	@Transactional(readOnly = true)
 	public Reserva obtenerReservaDeHabitacion(Long idHabitacion, Long idReserva) throws EntityNotFoundException {

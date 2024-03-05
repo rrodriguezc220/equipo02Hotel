@@ -146,6 +146,13 @@ public class HabitacionController {
         ApiResponse<HabitacionDTO> response=new ApiResponse<>(true, "Habitacion actualizado con exito", upHabitacionDTO);
         return ResponseEntity.ok(response);
     }
+    /**
+     * Método para obtener una Reserva específica asociada con una Habitación en particular.
+     * @param idHabitacion El ID de la Habitación.
+     * @param idReserva El ID de la Reserva.
+     * @return ResponseEntity que contiene una ApiResponse. La ApiResponse incluye un ReservaDTO que representa la Reserva obtenida.
+     * @throws EntityNotFoundException Si no se encuentra una Habitación con el ID proporcionado o si la Habitación no tiene una Reserva con el ID proporcionado.
+     */
     @GetMapping("/{idHabitacion}/reservas/{idReserva}")
     public ResponseEntity<?> obtenerReservaDeHabitacion(@PathVariable Long idHabitacion, @PathVariable Long idReserva) throws EntityNotFoundException {
         Reserva reserva = habitacionService.obtenerReservaDeHabitacion(idHabitacion, idReserva);
@@ -154,16 +161,12 @@ public class HabitacionController {
         return ResponseEntity.ok(response);
     }
 
-    
     /**
      * @GetMapping("/{idHabitacion}/reserva/{idReserva}")
 public ResponseEntity<?> obtenerReservaDeHabitacion(@PathVariable Long idHabitacion, @PathVariable Long idReserva) throws EntityNotFoundException {
     // Tu lógica aquí...
 }
-     * 
-     * 
-     * 
-     * 
+
      * @GetMapping("/{idHabitacion}/reserva/{idReserva}/huesped/{idHuesped}")
 public ResponseEntity<?> obtenerHuespedDeReservaDeHabitacion(@PathVariable Long idHabitacion, @PathVariable Long idReserva, @PathVariable Long idHuesped) throws EntityNotFoundException {
     // Tu lógica aquí...
@@ -176,7 +179,11 @@ public ResponseEntity<?> obtenerEmpleadoDeReservaDeHabitacion(@PathVariable Long
      * 
      */
     
-    
+    /**
+     * Método para validar los errores de binding result.
+     * @param result El objeto BindingResult que contiene los resultados de la validación.
+     * @return ResponseEntity que contiene un mapa de los errores. Cada entrada en el mapa tiene el nombre del campo como clave y el mensaje de error como valor.
+     */
     private ResponseEntity<Map<String, String>> validar(BindingResult result) {
         Map<String, String> errores = new HashMap<>();
         result.getFieldErrors().forEach(err -> {
