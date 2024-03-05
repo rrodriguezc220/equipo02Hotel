@@ -24,7 +24,9 @@ import com.equipo02.hotel.repositories.HabitacionRepository;
 import com.equipo02.hotel.repositories.HuespedRepository;
 import com.equipo02.hotel.repositories.ReservaRepository;
 
-
+/**
+ * Implementación de los servicios disponibles para la entidad Reserva.
+ */
 @Service
 public class ReservaServiceImp implements ReservaService {
 	
@@ -266,7 +268,24 @@ public class ReservaServiceImp implements ReservaService {
 	    return optionalHabitacion.get();
 	}
 	
+	/**
+	 * Obtiene todas las habitaciones de una reserva.
+	 *
+	 * @param idReserva El id de la reserva.
+	 * @return Lista de habitaciones de la reserva.
+	 * @throws EntityNotFoundException Si la reserva no se encuentra.
+	 */
+	@Override
+	@Transactional(readOnly = true)
+	public List<Habitacion> obtenerHabitacionesDeReserva(Long idReserva) throws EntityNotFoundException {
+	    Reserva reserva = buscarPorIdReserva(idReserva);
+	    return reserva.getHabitaciones();
+	}
 
+	
+	
+	
+	
 }
 
 

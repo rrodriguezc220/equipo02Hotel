@@ -218,7 +218,21 @@ public class ReservaController {
         return ResponseEntity.ok(response);
     }
     
-
+    /**
+     * Obtiene todas las habitaciones de una reserva.
+     *
+     * @param idReserva El id de la reserva.
+     * @return ResponseEntity con la lista de habitaciones de la reserva y un mensaje de éxito.
+     * @throws EntityNotFoundException Si la reserva no se encuentra.
+     */
+    @GetMapping("/{idReserva}/habitaciones")
+    public ResponseEntity<?> obtenerHabitacionesDeReserva(@PathVariable Long idReserva) throws EntityNotFoundException {
+        List<Habitacion> habitaciones = reservaService.obtenerHabitacionesDeReserva(idReserva);
+        List<HabitacionDTO> habitacionesDTOs = habitaciones.stream().map(habitacion -> modelMapper.map(habitacion, HabitacionDTO.class)).collect(Collectors.toList());
+        ApiResponse<List<HabitacionDTO>> response = new ApiResponse<>(true, "Lista de habitaciones obtenida con éxito.", habitacionesDTOs);
+        return ResponseEntity.ok(response);
+    }
+    
 }
 
 

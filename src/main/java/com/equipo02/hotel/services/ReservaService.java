@@ -96,5 +96,15 @@ public interface ReservaService {
 	 * @throws EntityNotFoundException si la reserva o la habitación no se encuentra.
 	 */
     Habitacion obtenerHabitacionDeReserva(Long idReserva, Long idHabitacion) throws EntityNotFoundException;
+    
+	/**
+	 * Obtiene todas las habitaciones de una reserva.
+	 *
+	 * @param idReserva El id de la reserva.
+	 * @return Lista de habitaciones de la reserva.
+	 * @throws EntityNotFoundException Si la reserva no se encuentra.
+	 */
+    List<Habitacion> obtenerHabitacionesDeReserva(Long idReserva) throws EntityNotFoundException;
+    
 }
 
