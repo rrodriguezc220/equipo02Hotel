@@ -131,7 +131,7 @@ public class ReservaController {
      * @throws IllegalOperationException si la operación no es válida.
      */
     @PatchMapping("/{id}")
-	public ResponseEntity<?> actualizarCampoReserva(@Valid @RequestBody ReservaDTO reservaDTO,BindingResult result, @PathVariable Long id) throws EntityNotFoundException, IllegalOperationException{
+	public ResponseEntity<?> actualizarCampoReserva(@Valid @RequestBody ReservaDTO reservaDTO, BindingResult result, @PathVariable Long id) throws EntityNotFoundException, IllegalOperationException{
     	if(result.hasErrors()) {
 			return validar(result);
 		}
@@ -191,17 +191,7 @@ public class ReservaController {
         ApiResponse<ReservaDTO> response = new ApiResponse<>(true, "Habitación eliminada de la reserva con éxito.", reservaDTO);
         return ResponseEntity.ok(response);
     }
-    
-    /**Método auxiliar para manejar errores de validación*/
-    private ResponseEntity<Map<String, String>> validar(BindingResult result) {
-        Map<String, String> errores = new HashMap<>();
-        result.getFieldErrors().forEach(err -> {
-            errores.put(err.getField(), "El campo " + err.getField() + " " + err.getDefaultMessage());
-        });
-        return ResponseEntity.badRequest().body(errores);
-    }
-    
-    
+
     /**
      * Obtiene una habitación específica de una reserva.
      *
@@ -232,6 +222,16 @@ public class ReservaController {
         ApiResponse<List<HabitacionDTO>> response = new ApiResponse<>(true, "Lista de habitaciones obtenida con éxito.", habitacionesDTOs);
         return ResponseEntity.ok(response);
     }
+    
+    /**Método auxiliar para manejar errores de validación*/
+    private ResponseEntity<Map<String, String>> validar(BindingResult result) {
+        Map<String, String> errores = new HashMap<>();
+        result.getFieldErrors().forEach(err -> {
+            errores.put(err.getField(), "El campo " + err.getField() + " " + err.getDefaultMessage());
+        });
+        return ResponseEntity.badRequest().body(errores);
+    }
+    
     
 }
 
