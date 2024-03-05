@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.equipo02.hotel.domain.Habitacion;
+import com.equipo02.hotel.domain.Reserva;
 import com.equipo02.hotel.exception.EntityNotFoundException;
 import com.equipo02.hotel.exception.ErrorMessage;
 import com.equipo02.hotel.exception.IllegalOperationException;
@@ -129,6 +130,19 @@ public class HabitacionServiceImp implements HabitacionService {
 	    }
 	    return habitacionRepository.save(habitacion);
 	}
+	@Override
+	@Transactional(readOnly = true)
+	public Reserva obtenerReservaDeHabitacion(Long idHabitacion, Long idReserva) throws EntityNotFoundException {
+		Habitacion habitacion = buscarPorIdHabitacion(idHabitacion);
+	    Optional<Reserva> optionalReserva = habitacion.getReservas().stream()
+	            .filter(r -> r.getIdReserva().equals(idReserva))
+	            .findFirst();
+	    if (optionalReserva.isEmpty()) {
+	        throw new EntityNotFoundException("Reserva no encontrada en la habitación");
+	    }
+	    return optionalReserva.get();
+	}
+	
 
 
 }

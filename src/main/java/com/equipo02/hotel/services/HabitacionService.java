@@ -10,6 +10,7 @@ import java.util.List;
 
 import com.equipo02.hotel.domain.Habitacion;
 import com.equipo02.hotel.domain.Huesped;
+import com.equipo02.hotel.domain.Reserva;
 import com.equipo02.hotel.exception.EntityNotFoundException;
 import com.equipo02.hotel.exception.IllegalOperationException;
 /**
@@ -59,4 +60,13 @@ public interface HabitacionService {
      * @throws EntityNotFoundException Si no se encuentra una Habitación con el ID proporcionado.
      */
     Habitacion actualizarCampoHabitacion(Long id, Habitacion habitacion) throws EntityNotFoundException;
+    /**
+     * Método para obtener una Reserva específica asociada con una Habitación en particular.
+     *
+     * @param idHabitacion El ID de la Habitación.
+     * @param idReserva El ID de la Reserva.
+     * @return Un objeto Reserva que representa la Reserva asociada con la Habitación.
+     * @throws EntityNotFoundException Si no se encuentra una Habitación con el ID proporcionado o si la Habitación no tiene una Reserva con el ID proporcionado.
+     */
+    Reserva obtenerReservaDeHabitacion(Long idHabitacion, Long idReserva) throws EntityNotFoundException;
 }

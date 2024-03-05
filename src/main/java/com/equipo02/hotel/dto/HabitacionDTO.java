@@ -12,6 +12,9 @@ import java.util.List;
 import com.equipo02.hotel.domain.Habitacion;
 import com.equipo02.hotel.domain.Reserva;
 
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotNull;
+
 /**
  * Clase que representa una Habitación en el dominio del hotel en forma de DTO (Data Transfer Object).
  */
@@ -24,15 +27,19 @@ public class HabitacionDTO {
 	/**
      * Tipo de la habitación. 
      */
+	@NotNull(message = "El tipo de habitación no puede ser nulo")
     private String tipo;
     
     /**
 	  * precio de la habitacion
 	  */
+	@NotNull(message = "El precio de la habitación no puede ser nulo")
+    @DecimalMin(value = "0.0", inclusive = false, message = "El precio debe ser mayor que 0")
 	 private BigDecimal precio;
 	 /**
 	  * decripcionde la habitacion
 	  */
+	@NotNull(message = "La descripción de la habitación no puede ser nula")
 	 private String descripcion;
     /**
      * Indica si la habitación está disponible o no.
