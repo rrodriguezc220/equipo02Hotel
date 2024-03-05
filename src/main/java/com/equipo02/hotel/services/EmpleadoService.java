@@ -8,7 +8,6 @@ package com.equipo02.hotel.services;
 import java.util.List;
 
 import com.equipo02.hotel.domain.Empleado;
-import com.equipo02.hotel.domain.Huesped;
 import com.equipo02.hotel.domain.Reserva;
 import com.equipo02.hotel.exception.EntityNotFoundException;
 import com.equipo02.hotel.exception.IllegalOperationException;

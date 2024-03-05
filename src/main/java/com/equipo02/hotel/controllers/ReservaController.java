@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.equipo02.hotel.domain.Habitacion;
 import com.equipo02.hotel.domain.Reserva;
 import com.equipo02.hotel.dto.HabitacionDTO;
@@ -33,7 +32,6 @@ import com.equipo02.hotel.exception.EntityNotFoundException;
 import com.equipo02.hotel.exception.IllegalOperationException;
 import com.equipo02.hotel.services.ReservaService;
 import com.equipo02.hotel.util.ApiResponse;
-
 import jakarta.validation.Valid;
 
 /**

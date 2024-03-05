@@ -19,12 +19,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.equipo02.hotel.domain.Empleado;
-import com.equipo02.hotel.domain.Huesped;
 import com.equipo02.hotel.domain.Reserva;
 import com.equipo02.hotel.dto.EmpleadoDTO;
-import com.equipo02.hotel.dto.HuespedDTO;
 import com.equipo02.hotel.dto.ReservaDTO;
 import com.equipo02.hotel.exception.EntityNotFoundException;
 import com.equipo02.hotel.exception.IllegalOperationException;
@@ -60,7 +57,7 @@ public class EmpleadoController {
 		(true, "Lista de empleados obtenida con éxito", empleadosDTOs);
 		return ResponseEntity.ok(response);
 	}
-
+	
 	  /**
      * Método para obtener los detalles de un empleado específico por su ID.
      * 
@@ -69,7 +66,7 @@ public class EmpleadoController {
      * @throws EntityNotFoundException si no se encuentra un empleado con el ID proporcionado.
      */
 	@GetMapping("/{id}")
-	public ResponseEntity<?> obtenerPorId(@PathVariable Long id) throws EntityNotFoundException {
+	public ResponseEntity<?> obtenerPorId(@PathVariable Long id) throws EntityNotFoundException{
 		Empleado empleado = empleadoService.buscarPorId(id);
 		EmpleadoDTO empleadoDTO = modelMapper.map(empleado, EmpleadoDTO.class);
 

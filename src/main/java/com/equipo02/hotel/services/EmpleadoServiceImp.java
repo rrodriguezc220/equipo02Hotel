@@ -8,14 +8,10 @@ package com.equipo02.hotel.services;
 
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.equipo02.hotel.domain.Empleado;
-import com.equipo02.hotel.domain.Habitacion;
-import com.equipo02.hotel.domain.Huesped;
 import com.equipo02.hotel.domain.Reserva;
 import com.equipo02.hotel.exception.EntityNotFoundException;
 import com.equipo02.hotel.exception.ErrorMessage;
@@ -49,7 +45,7 @@ public class EmpleadoServiceImp implements EmpleadoService {
      */
 	@Override
 	@Transactional(readOnly = true)
-	public Empleado buscarPorId(Long idEmpleado) throws EntityNotFoundException {
+	public Empleado buscarPorId(Long idEmpleado) throws EntityNotFoundException{
 		Optional<Empleado> empleado = empleadoRep.findById(idEmpleado);
 		if(empleado.isEmpty()) 
 			throw new EntityNotFoundException(ErrorMessage.EMPLEADO_NOT_FOUND) ;
