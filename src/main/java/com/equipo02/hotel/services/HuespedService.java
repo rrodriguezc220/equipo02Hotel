@@ -8,7 +8,9 @@ package com.equipo02.hotel.services;
 
 import java.util.List;
 
+import com.equipo02.hotel.domain.Habitacion;
 import com.equipo02.hotel.domain.Huesped;
+import com.equipo02.hotel.domain.Reserva;
 import com.equipo02.hotel.exception.EntityNotFoundException;
 import com.equipo02.hotel.exception.IllegalOperationException;
 
@@ -42,7 +44,7 @@ public interface HuespedService {
 	 * @param huesped El huésped a grabar.
 	 * @return El huésped grabado.
 	 */
-	Huesped grabar(Huesped huesped);
+	Huesped grabar(Huesped huesped) throws EntityNotFoundException, IllegalOperationException;
 	
 	/**
 	 * Actualiza los datos de un huésped existente.
@@ -52,7 +54,7 @@ public interface HuespedService {
 	 * @return El huésped actualizado.
 	 * @throws EntityNotFoundException Si el huésped no puede ser encontrado.
 	 */
-	Huesped actualizar(Long id, Huesped huesped) throws EntityNotFoundException;
+	Huesped actualizar(Long id, Huesped huesped) throws EntityNotFoundException, IllegalOperationException;
 	
 	/**
 	 * Elimina un huésped por su ID.
@@ -92,5 +94,14 @@ public interface HuespedService {
 	 * @return El huésped actualizado.
 	 * @throws EntityNotFoundException Si el huésped no puede ser encontrado.
 	 */
-	Huesped actualizarPorCampos(Long id, Huesped huesped) throws EntityNotFoundException;
+	Huesped actualizarPorCampos(Long id, Huesped huesped) throws EntityNotFoundException, IllegalOperationException;
+	
+	//Subservicios
+	List<Reserva> obtenerReservasPorHuesped(Long idHuesped) throws EntityNotFoundException;
+	
+	Reserva obtenerReservaDeHuesped(Long idHuesped, Long idReserva) throws EntityNotFoundException;
+	
+	List<Habitacion> obtenerHabitacionesPorReserva(Long idHuesped, Long idReserva) throws EntityNotFoundException;
+	
+	Habitacion obtenerHabitacionDeReserva(Long idHuesped, Long idReserva, Long idHabitacion) throws EntityNotFoundException;
 }

@@ -12,6 +12,13 @@ import java.util.List;
 import com.equipo02.hotel.domain.Huesped;
 import com.equipo02.hotel.domain.Reserva;
 
+import jakarta.persistence.Column;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+
 /**
  * DTO (Data Transfer Object) que representa un huesped del hotel.
  */
@@ -21,26 +28,42 @@ public class HuespedDTO {
      * Identificador único del huesped.
      */
 	private Long idHuesped;
+	
 	/**
      * DNI único del huesped.
      */
+	@NotBlank(message = "El DNI no puede estar en blanco")
+    @Size(min = 8, max = 8, message = "El DNI debe tener exactamente 8 caracteres")
+	@Pattern(regexp = "[0-9]{8}", message = "Formato de DNI no válido")
 	private String dniHuesped;
+	
 	/**
      * Nombre del huesped.
      */
+	@NotBlank(message = "El nombre no puede estar en blanco")
 	private String nombreHuesped;
+	
 	/**
      * Dirección del huesped.
      */
 	private String direccionHuesped;
+	
 	/**
      * Teléfono del huesped.
      */
+	@NotBlank(message = "El teléfono no puede estar en blanco")
+    @Size(min = 9, max = 9, message = "El teléfono debe tener exactamente 9 caracteres")
+	@Pattern(regexp = "[0-9]{9}", message = "Formato de teléfono no válido")
 	private String telefonoHuesped;
+	
 	/**
      * Correo del huesped.
      */
+	@NotEmpty
+    @Email
+	@Column(unique = true)
 	private String correoHuesped;
+	
 	/**
      * Aval asociado al huesped.
      */

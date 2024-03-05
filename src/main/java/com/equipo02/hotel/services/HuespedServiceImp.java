@@ -13,11 +13,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.equipo02.hotel.domain.Habitacion;
 import com.equipo02.hotel.domain.Huesped;
+import com.equipo02.hotel.domain.Reserva;
 import com.equipo02.hotel.exception.EntityNotFoundException;
 import com.equipo02.hotel.exception.ErrorMessage;
 import com.equipo02.hotel.exception.IllegalOperationException;
+import com.equipo02.hotel.repositories.HabitacionRepository;
 import com.equipo02.hotel.repositories.HuespedRepository;
+import com.equipo02.hotel.repositories.ReservaRepository;
 
 /**
  * Implementación de la interfaz HuespedService que proporciona operaciones relacionadas con los huéspedes.
@@ -27,6 +31,12 @@ public class HuespedServiceImp implements HuespedService {
 	
 	@Autowired
 	private HuespedRepository huespedRep;
+	
+	@Autowired
+	private ReservaRepository reservaRep;
+	
+	@Autowired
+	private HabitacionRepository habitacionRep;
 	
 	/**
      * Lista todos los huéspedes disponibles.
@@ -64,7 +74,17 @@ public class HuespedServiceImp implements HuespedService {
      */
 	@Override
 	@Transactional
-	public Huesped grabar(Huesped huesped){
+	public Huesped grabar(Huesped huesped) throws EntityNotFoundException, IllegalOperationException{
+		if (huesped.getAval() != null) {
+			Optional<Huesped> avalEntity = huespedRep.findById(huesped.getAval().getIdHuesped());
+			if(avalEntity.isEmpty()) {
+				throw new EntityNotFoundException("El aval con id proporcionado no fue encontrado");
+			}
+			List<Huesped> huespedesConEsteAval = huespedRep.findByAval(avalEntity.get());
+			if (!huespedesConEsteAval.isEmpty()) { 
+				throw new IllegalOperationException("El aval ya fue designado");
+			}
+		}
 		return huespedRep.save(huesped);
 	}
 
@@ -78,10 +98,23 @@ public class HuespedServiceImp implements HuespedService {
      */
 	@Override
 	@Transactional
-	public Huesped actualizar(Long id, Huesped huesped) throws EntityNotFoundException{
+	public Huesped actualizar(Long id, Huesped huesped) throws EntityNotFoundException, IllegalOperationException{
 		Optional<Huesped> huespedEntity = huespedRep.findById(id);
 		if(huespedEntity.isEmpty()) {
 			throw new EntityNotFoundException(ErrorMessage.HUESPED_NOT_FOUND);
+		}
+		if (huesped.getAval() != null) {
+			Optional<Huesped> avalEntity = huespedRep.findById(huesped.getAval().getIdHuesped());
+			if(avalEntity.isEmpty()) {
+				throw new EntityNotFoundException("El aval con id proporcionado no fue encontrado");
+			}
+			if(id == avalEntity.get().getIdHuesped()) {
+				throw new IllegalOperationException("El huesped no se puede avalar asi mismo");
+			}
+			List<Huesped> huespedesConEsteAval = huespedRep.findByAval(avalEntity.get());
+			if (!huespedesConEsteAval.isEmpty()) { 
+				throw new IllegalOperationException("El aval ya fue designado");
+			}
 		}
 		huesped.setIdHuesped(id);
 		return huespedRep.save(huesped);
@@ -133,6 +166,10 @@ public class HuespedServiceImp implements HuespedService {
 		if(idHuesped == idAval) {
 			throw new IllegalOperationException("El huesped no se puede avalar asi mismo");
 		}
+		List<Huesped> huespedesConEsteAval = huespedRep.findByAval(avalEntity.get());
+		if (!huespedesConEsteAval.isEmpty()) { 
+			throw new IllegalOperationException("El aval fue designado a otro huesped");
+		}
 		huespedEntity.get().setAval(avalEntity.get());
 		return huespedRep.save(huespedEntity.get());
 	}
@@ -169,7 +206,7 @@ public class HuespedServiceImp implements HuespedService {
      */
 	@Override
 	@Transactional
-	public Huesped actualizarPorCampos(Long id, Huesped huesped) throws EntityNotFoundException{
+	public Huesped actualizarPorCampos(Long id, Huesped huesped) throws EntityNotFoundException, IllegalOperationException{
 		Optional<Huesped> huespedEntity = huespedRep.findById(id);
 		if(huespedEntity.isEmpty()) {
 			throw new EntityNotFoundException(ErrorMessage.HUESPED_NOT_FOUND);
@@ -197,7 +234,91 @@ public class HuespedServiceImp implements HuespedService {
 			if(avalEntity.isEmpty()) {
 				throw new EntityNotFoundException("El aval con id proporcionado no fue encontrado");
 			}
+			if(id == avalEntity.get().getIdHuesped()) {
+				throw new IllegalOperationException("El huesped no se puede avalar asi mismo");
+			}
+			List<Huesped> huespedesConEsteAval = huespedRep.findByAval(avalEntity.get());
+			if (!huespedesConEsteAval.isEmpty()) { 
+				throw new IllegalOperationException("El aval ya fue designado");
+			}
 		}
 		return huespedRep.save(huesped);
 	}
+	
+	//Subservicios
+	
+	@Override
+	@Transactional
+    public List<Reserva> obtenerReservasPorHuesped(Long idHuesped) throws EntityNotFoundException {
+		Optional<Huesped> huesped = huespedRep.findById(idHuesped);
+		if(huesped.isEmpty()) {
+			throw new EntityNotFoundException(ErrorMessage.HUESPED_NOT_FOUND);
+		}
+		
+		List<Reserva> reservas = huesped.get().getReservas();
+		
+		if(reservas.isEmpty()) {
+			throw new EntityNotFoundException(ErrorMessage.RESERVA_NOT_FOUND);
+		}
+		
+		return reservas;
+    }
+	
+	@Override
+    @Transactional
+    public Reserva obtenerReservaDeHuesped(Long idHuesped, Long idReserva) throws EntityNotFoundException {
+		Optional<Huesped> huesped = huespedRep.findById(idHuesped);
+		if(huesped.isEmpty()) {
+			throw new EntityNotFoundException(ErrorMessage.HUESPED_NOT_FOUND);
+		}
+
+		Optional<Reserva> reserva = reservaRep.findById(idReserva);
+		if(reserva.isEmpty()) {
+			throw new EntityNotFoundException(ErrorMessage.RESERVA_NOT_FOUND);
+		}
+
+        return reserva.get();
+    }
+	
+	@Override
+	@Transactional
+	public List<Habitacion> obtenerHabitacionesPorReserva(Long idHuesped, Long idReserva) throws EntityNotFoundException {
+		Optional<Huesped> huesped = huespedRep.findById(idHuesped);
+		if(huesped.isEmpty()) {
+			throw new EntityNotFoundException(ErrorMessage.HUESPED_NOT_FOUND);
+		}
+		
+		Optional<Reserva> reserva = reservaRep.findById(idReserva);
+		if(reserva.isEmpty()) {
+			throw new EntityNotFoundException(ErrorMessage.RESERVA_NOT_FOUND);
+		}
+		
+		List<Habitacion> habitaciones = reserva.get().getHabitaciones();
+		if(habitaciones.isEmpty()) {
+			throw new EntityNotFoundException(ErrorMessage.HABITACION_NOT_FOUND);
+		}
+		
+		return habitaciones;
+    }
+	
+	@Override
+    @Transactional
+    public Habitacion obtenerHabitacionDeReserva(Long idHuesped, Long idReserva, Long idHabitacion) throws EntityNotFoundException {
+		Optional<Huesped> huesped = huespedRep.findById(idHuesped);
+		if(huesped.isEmpty()) {
+			throw new EntityNotFoundException(ErrorMessage.HUESPED_NOT_FOUND);
+		}
+
+		Optional<Reserva> reserva = reservaRep.findById(idReserva);
+		if(reserva.isEmpty()) {
+			throw new EntityNotFoundException(ErrorMessage.RESERVA_NOT_FOUND);
+		}
+		
+		Optional<Habitacion> habitacion = habitacionRep.findById(idHabitacion);
+		if(habitacion.isEmpty()) {
+			throw new EntityNotFoundException(ErrorMessage.HABITACION_NOT_FOUND);
+		}
+
+        return habitacion.get();
+    }
 }

@@ -35,4 +35,5 @@ public interface HuespedRepository extends JpaRepository<Huesped, Long> {
 	 * @return Una lista de huéspedes que tienen el aval proporcionado.
 	 */
 	List<Huesped> findByAval(Huesped aval);
+	
 }

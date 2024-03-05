@@ -6,13 +6,16 @@
 
 package com.equipo02.hotel.controllers;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -23,18 +26,24 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.equipo02.hotel.domain.Habitacion;
 import com.equipo02.hotel.domain.Huesped;
+import com.equipo02.hotel.domain.Reserva;
+import com.equipo02.hotel.dto.HabitacionDTO;
 import com.equipo02.hotel.dto.HuespedDTO;
+import com.equipo02.hotel.dto.ReservaDTO;
 import com.equipo02.hotel.exception.EntityNotFoundException;
 import com.equipo02.hotel.exception.IllegalOperationException;
 import com.equipo02.hotel.services.HuespedService;
 import com.equipo02.hotel.util.ApiResponse;
 
+import jakarta.validation.Valid;
+
 /**
  * Controlador REST para manejar las operaciones relacionadas con los huéspedes.
  */
 @RestController
-@RequestMapping("/api/huespedes")
+@RequestMapping(value = "/api/huespedes", headers = "Api-Version=1")
 public class HuespedController {
 
 	@Autowired
@@ -44,10 +53,10 @@ public class HuespedController {
 	private ModelMapper modelMapper;
 
 	/**
-     * Obtiene todos los huéspedes.
-     * 
-     * @return Una respuesta HTTP que contiene la lista de huéspedes.
-     */
+	 * Obtiene todos los huéspedes.
+	 * 
+	 * @return Una respuesta HTTP que contiene la lista de huéspedes.
+	 */
 	@GetMapping
 	public ResponseEntity<?> obtenerTodos(){
 		List<Huesped> huespedes = huespedService.listarHuespedes();
@@ -58,12 +67,12 @@ public class HuespedController {
 	}
 
 	/**
-     * Obtiene un huésped por su ID.
-     * 
-     * @param id El ID del huésped.
-     * @return Una respuesta HTTP que contiene el huésped encontrado.
-     * @throws EntityNotFoundException Si el huésped no puede ser encontrado.
-     */
+	 * Obtiene un huésped por su ID.
+	 * 
+	 * @param id El ID del huésped.
+	 * @return Una respuesta HTTP que contiene el huésped encontrado.
+	 * @throws EntityNotFoundException Si el huésped no puede ser encontrado.
+	 */
 	@GetMapping("/{id}")
 	public ResponseEntity<?> obtenerPorId(@PathVariable Long id) throws EntityNotFoundException {
 		Huesped huesped = huespedService.buscarPorId(id);
@@ -80,7 +89,11 @@ public class HuespedController {
 	 * @return ResponseEntity con un ApiResponse que contiene un mensaje de éxito y el DTO del huésped guardado, junto con el código de estado HTTP 201 (CREATED) en caso de éxito.
 	 */
 	@PostMapping
-	public ResponseEntity<?> guardar(@RequestBody HuespedDTO huespedDTO) {
+	public ResponseEntity<?> guardar(@Valid @RequestBody HuespedDTO huespedDTO, BindingResult result) throws EntityNotFoundException, IllegalOperationException{
+		if(result.hasErrors()) {
+			return validar(result);
+		}
+
 		Huesped huesped = modelMapper.map(huespedDTO, Huesped.class);
 		huespedService.grabar(huesped);
 
@@ -98,7 +111,11 @@ public class HuespedController {
 	 * @throws EntityNotFoundException Si el huésped con el ID proporcionado no se encuentra en la base de datos.
 	 */
 	@PutMapping("/{id}")
-	public ResponseEntity<?> actualizar(@PathVariable Long id, @RequestBody HuespedDTO huespedDTO) throws EntityNotFoundException{
+	public ResponseEntity<?> actualizar(@Valid @RequestBody HuespedDTO huespedDTO, BindingResult result, @PathVariable Long id) throws EntityNotFoundException, IllegalOperationException{
+		if(result.hasErrors()) {
+			return validar(result);
+		}
+
 		Huesped huesped = modelMapper.map(huespedDTO, Huesped.class);
 		huespedService.actualizar(id, huesped);
 
@@ -121,7 +138,7 @@ public class HuespedController {
 		ApiResponse<String> response = new ApiResponse<>(true, "Huesped eliminado con éxito", null);
 		return ResponseEntity.ok(response);
 	}
-	
+
 	/**
 	 * Método para asignar un aval a un huésped existente en la base de datos.
 	 *
@@ -138,7 +155,7 @@ public class HuespedController {
 		ApiResponse<HuespedDTO> response = new ApiResponse<>(true, "Aval asignado con éxito", huespedDTO);
 		return ResponseEntity.ok(response);
 	}
-	
+
 	/**
 	 * Método para eliminar el aval de un huésped existente en la base de datos.
 	 *
@@ -154,7 +171,7 @@ public class HuespedController {
 		ApiResponse<HuespedDTO> response = new ApiResponse<>(true, "Aval eliminado con éxito", huespedDTO);
 		return ResponseEntity.ok(response);
 	}
-	
+
 	/**
 	 * Método para actualizar los campos de un huésped existente en la base de datos.
 	 *
@@ -165,12 +182,71 @@ public class HuespedController {
 	 * @throws IllegalOperationException Si se intenta asignar un aval a sí mismo como aval o si no se encuentra el aval proporcionado.
 	 */
 	@PatchMapping("/{idHuesped}")
-	public ResponseEntity<?> actualizarPorCampos(@PathVariable Long idHuesped, @RequestBody HuespedDTO huespedDTO) throws EntityNotFoundException, IllegalOperationException{
+	public ResponseEntity<?> actualizarPorCampos(@Valid @RequestBody HuespedDTO huespedDTO, BindingResult result, @PathVariable Long idHuesped) throws EntityNotFoundException, IllegalOperationException{
+		if(result.hasErrors()) {
+			return validar(result);
+		}
+
 		Huesped huesped = modelMapper.map(huespedDTO, Huesped.class);
 		huespedService.actualizarPorCampos(idHuesped, huesped);
 
 		HuespedDTO updatedHuespedDTO = modelMapper.map(huesped, HuespedDTO.class);
 		ApiResponse<HuespedDTO> response = new ApiResponse<>(true, "Huesped actualizado con éxito", updatedHuespedDTO);
 		return ResponseEntity.ok(response);
+	}
+
+	//Subservicios
+
+	@GetMapping("/{id}/reservas")
+	public ResponseEntity<?> obtenerReservasPorHuesped(@PathVariable Long id) throws EntityNotFoundException {
+		List<Reserva> reservas = huespedService.obtenerReservasPorHuesped(id);
+
+		List<ReservaDTO> reservasDTOs = reservas.stream().map(reserva -> modelMapper.map(reserva, ReservaDTO.class)).collect(Collectors.toList());
+
+		ApiResponse<List<ReservaDTO>> response = new ApiResponse<>(true, "Lista de reservas del huesped obtenida con éxito", reservasDTOs);
+
+		return ResponseEntity.ok(response);
+	}
+
+	@GetMapping("/{idHuesped}/reservas/{idReserva}")
+	public ResponseEntity<?> obtenerReservasPorHuesped(@PathVariable Long idHuesped, @PathVariable Long idReserva) throws EntityNotFoundException {
+		Reserva reserva = huespedService.obtenerReservaDeHuesped(idHuesped, idReserva);
+
+		ReservaDTO reservaDTO = modelMapper.map(reserva, ReservaDTO.class);
+
+		ApiResponse<ReservaDTO> response = new ApiResponse<>(true, "Reserva del huesped obtenido con éxito", reservaDTO);
+
+		return ResponseEntity.ok(response);
+	}
+
+	@GetMapping("/{idHuesped}/reservas/{idReserva}/habitaciones")
+	public ResponseEntity<?> obtenerHabitacionesDeReserva(@PathVariable Long idHuesped, @PathVariable Long idReserva) throws EntityNotFoundException {
+		List<Habitacion> habitaciones = huespedService.obtenerHabitacionesPorReserva(idHuesped, idReserva);
+
+		List<HabitacionDTO> reservasDTOs = habitaciones.stream().map(habitacion -> modelMapper.map(habitacion, HabitacionDTO.class)).collect(Collectors.toList());
+
+		ApiResponse<List<HabitacionDTO>> response = new ApiResponse<>(true, "Lista de habitaciones de la reserva del huesped obtenida con éxito", reservasDTOs);
+
+		return ResponseEntity.ok(response);
+	}
+
+	@GetMapping("/{idHuesped}/reservas/{idReserva}/habitaciones/{idHabitacion}")
+	public ResponseEntity<?> obtenerHabitacionDeReserva(@PathVariable Long idHuesped, @PathVariable Long idReserva, @PathVariable Long idHabitacion) throws EntityNotFoundException {
+		Habitacion habitacion = huespedService.obtenerHabitacionDeReserva(idHuesped, idReserva, idHabitacion);
+
+		HabitacionDTO habitacionDTO = modelMapper.map(habitacion, HabitacionDTO.class);
+
+		ApiResponse<HabitacionDTO> response = new ApiResponse<>(true, "Habitación de la reserva del huesped obtenido con éxito", habitacionDTO);
+
+		return ResponseEntity.ok(response);
+	}
+
+	/**Método auxiliar para manejar errores de validación*/
+	private ResponseEntity<Map<String, String>> validar(BindingResult result) {
+		Map<String, String> errores = new HashMap<>();
+		result.getFieldErrors().forEach(err -> {
+			errores.put(err.getField(), "El campo " + err.getField() + " " + err.getDefaultMessage());
+		});
+		return ResponseEntity.badRequest().body(errores);
 	}
 }
