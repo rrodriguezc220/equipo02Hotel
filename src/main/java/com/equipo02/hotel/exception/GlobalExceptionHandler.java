@@ -84,8 +84,8 @@ public class GlobalExceptionHandler {
 	
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<ErrorMessage> globalExceptionHandler(Exception ex, WebRequest request){
-		
-		ErrorMessage message = new ErrorMessage(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), request.getDescription(false));
+		ErrorMessage message = new ErrorMessage(HttpStatus.INTERNAL_SERVER_ERROR, "Metodo estatico no definido para: " + ex.getMessage().substring(19),
+				request.getDescription(false));
 		return new ResponseEntity<>(message, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
