@@ -13,13 +13,15 @@ import com.equipo02.hotel.domain.Empleado;
 import com.equipo02.hotel.domain.Habitacion;
 import com.equipo02.hotel.domain.Huesped;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.hateoas.RepresentationModel;
 
 /**
  * DTO (Data Transfer Object) que representa una reserva en el hotel.
  */
-public class ReservaDTO {
+public class ReservaDTO extends RepresentationModel<ReservaDTO> {
 	
     /** Identificador único de la reserva. */
     private Long idReserva;
@@ -44,7 +46,7 @@ public class ReservaDTO {
     
     /** Empleado asociado a la reserva. */
     @NotNull
-    private Empleado empleado;    
+    private Empleado empleado;
     
     /** Lista de habitaciones asociadas a la reserva. */
     private List<Habitacion> habitaciones = new ArrayList<>();

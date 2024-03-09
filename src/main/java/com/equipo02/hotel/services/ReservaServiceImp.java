@@ -53,7 +53,7 @@ public class ReservaServiceImp implements ReservaService {
     /**
      * Devuelve la reserva con la id proporcionada.
      *
-     * @param idReserva El id de la reserva a buscar.
+     * @param idReseva El id de la reserva a buscar.
      * @return La reserva encontrada.
      * @throws EntityNotFoundException si la reserva con el id asignado no es encontrado en la persistencia.
      */

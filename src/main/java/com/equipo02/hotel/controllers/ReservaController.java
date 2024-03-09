@@ -34,6 +34,9 @@ import com.equipo02.hotel.services.ReservaService;
 import com.equipo02.hotel.util.ApiResponse;
 import jakarta.validation.Valid;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 /**
  * Controlador REST que maneja las operaciones relacionadas con las reservas en el hotel.
  */
@@ -56,13 +59,30 @@ public class ReservaController {
      * @throws EntityNotFoundException si no se encuentran reservas.
      */
     @GetMapping()
-	public ResponseEntity<?> listarTodos() throws EntityNotFoundException{
-		List<Reserva> reservas = reservaService.listarTodos();
-		List<ReservaDTO> reservasDTOs = reservas.stream().map(reserva -> modelMapper.map(reserva, ReservaDTO.class)).collect(Collectors.toList());
-		ApiResponse<List<ReservaDTO>> response = new ApiResponse<>(true, "Lista de reservas obtenida con éxito.", reservasDTOs);
-		return ResponseEntity.ok(response);
+	public ResponseEntity<?> listarTodos() throws EntityNotFoundException {
+        List<Reserva> reservas = reservaService.listarTodos();
+        List<ReservaDTO> reservasDTOs = reservas.stream().map(reserva -> modelMapper.map(reserva, ReservaDTO.class)).collect(Collectors.toList());
+
+        for (ReservaDTO reservaDTO : reservasDTOs) {
+
+            if (reservaDTO.getHuesped() != null) {
+                Long idHuesped = reservaDTO.getHuesped().getIdHuesped();
+                reservaDTO.add(linkTo(methodOn(HuespedController.class).obtenerPorId(idHuesped)).withRel("huesped"));
+            }
+            if (reservaDTO.getEmpleado() != null) {
+                Long idEmpleado = reservaDTO.getEmpleado().getIdEmpleado();
+                reservaDTO.add(linkTo(methodOn(EmpleadoController.class).obtenerPorId(idEmpleado)).withRel("empleado"));
+            }
+            if (!reservaDTO.getHabitaciones().isEmpty()) {
+                for (Habitacion habitacion : reservaDTO.getHabitaciones()) {
+                    Long idHabitacion = habitacion.getIdHabitacion();
+                    reservaDTO.add(linkTo(methodOn(HabitacionController.class).buscarPorIdHabitacion(idHabitacion)).withRel("habitacion"));
+                }
+            }
+        }
+        ApiResponse<List<ReservaDTO>> response = new ApiResponse<>(true, "Lista de reservas obtenida con éxito.", reservasDTOs);
+        return ResponseEntity.ok(response);
 	}
-    
     /**
      * Obtiene una reserva por su id.
      *
@@ -71,14 +91,29 @@ public class ReservaController {
      * @throws EntityNotFoundException si la reserva no se encuentra.
     */
     @GetMapping("/{id}")
-    public ResponseEntity<?> buscarPorIdReserva(@PathVariable Long id) throws EntityNotFoundException, BadRequestException{
-    	Reserva reserva = reservaService.buscarPorIdReserva(id);
-    	ReservaDTO reservaDTO = modelMapper.map(reserva, ReservaDTO.class);
-		ApiResponse<ReservaDTO> response = new ApiResponse<>(true, "Reserva obtenida con éxito.", reservaDTO);
-		return ResponseEntity.ok(response);
-	}
-    
-    
+    public ResponseEntity<?> buscarPorIdReserva(@PathVariable Long id) throws EntityNotFoundException, BadRequestException {
+        Reserva reserva = reservaService.buscarPorIdReserva(id);
+        ReservaDTO reservaDTO = modelMapper.map(reserva, ReservaDTO.class);
+        if (reservaDTO.getHuesped() != null) {
+            Long idHuesped = reserva.getHuesped().getIdHuesped();
+            reservaDTO.add(linkTo(methodOn(HuespedController.class).obtenerPorId(idHuesped)).withRel("huesped"));
+        }
+        if (reservaDTO.getEmpleado() != null) {
+            Long idEmpleado = reserva.getEmpleado().getIdEmpleado();
+            reservaDTO.add(linkTo(methodOn(EmpleadoController.class).obtenerPorId(idEmpleado)).withRel("empleado"));
+        }
+        if (!reservaDTO.getHabitaciones().isEmpty()) {
+            for (Habitacion habitacion : reserva.getHabitaciones()) {
+                Long idHabitacion = habitacion.getIdHabitacion();
+                reservaDTO.add(linkTo(methodOn(HabitacionController.class).buscarPorIdHabitacion(idHabitacion)).withRel("habitacion"));
+            }
+        }
+        ApiResponse<ReservaDTO> response = new ApiResponse<>(true, "Reserva obtenida con éxito.", reservaDTO);
+
+        return ResponseEntity.ok(response);
+    }
+
+
     /**
      * Agrega una reserva a la persistencia.
      *
