@@ -31,12 +31,17 @@ import com.equipo02.hotel.domain.Habitacion;
 import com.equipo02.hotel.domain.Reserva;
 import com.equipo02.hotel.dto.HabitacionDTO;
 import com.equipo02.hotel.dto.ReservaDTO;
+import com.equipo02.hotel.exception.BadRequestException;
 import com.equipo02.hotel.exception.EntityNotFoundException;
 import com.equipo02.hotel.exception.IllegalOperationException;
 import com.equipo02.hotel.services.HabitacionService;
 import com.equipo02.hotel.util.ApiResponse;
 
 import jakarta.validation.Valid;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 /**
  * Controlador REST que maneja las operaciones relacionadas con las habitaciones en el hotel.
  */
@@ -61,7 +66,15 @@ public class HabitacionController {
 	public ResponseEntity<?> listarTodos() throws EntityNotFoundException{
 		List<Habitacion> habitaciones = habitacionService.listarTodos();
 		List<HabitacionDTO> habitacionesDTOs = habitaciones.stream().map(habitacion -> modelMapper.map(habitacion, HabitacionDTO.class)).collect(Collectors.toList());
-		ApiResponse<List<HabitacionDTO>> response = new ApiResponse<>(true, "Lista de habitaciones obtenida con éxito.", habitacionesDTOs);
+        for (HabitacionDTO habitacionDTO : habitacionesDTOs) {
+            if (!habitacionDTO.getReservas().isEmpty()) {
+                for (Reserva reserva : habitacionDTO.getReservas()) {
+                    Long idReserva = reserva.getIdReserva();
+                    habitacionDTO.add(linkTo(methodOn(ReservaController.class).buscarPorIdReserva(idReserva)).withRel("reserva"));
+                }
+            }
+        }
+        ApiResponse<List<HabitacionDTO>> response = new ApiResponse<>(true, "Lista de habitaciones obtenida con éxito.", habitacionesDTOs);
 		return ResponseEntity.ok(response);
 	}
     /**
@@ -72,10 +85,18 @@ public class HabitacionController {
      * @throws EntityNotFoundException si no se encuentra una habitación con el ID proporcionado.
      */
     @GetMapping("/{id}")
-	public ResponseEntity<?> buscarPorIdHabitacion(@PathVariable Long id) throws EntityNotFoundException{
+	public ResponseEntity<?> buscarPorIdHabitacion(@PathVariable Long id) throws EntityNotFoundException, BadRequestException{
     	Habitacion habitacion = habitacionService.buscarPorIdHabitacion(id);
     	HabitacionDTO habitacionDTO = modelMapper.map(habitacion, HabitacionDTO.class);
-		ApiResponse<HabitacionDTO> response = new ApiResponse<>(true, "Habitación obtenida con éxito.", habitacionDTO);
+
+
+        if (!habitacionDTO.getReservas().isEmpty()) {
+            for (Reserva reserva : habitacion.getReservas()) {
+                Long idReserva = reserva.getIdReserva();
+                habitacionDTO.add(linkTo(methodOn(ReservaController.class).buscarPorIdReserva(idReserva)).withRel("Reserva"));
+            }
+        }
+        ApiResponse<HabitacionDTO> response = new ApiResponse<>(true, "Habitación obtenida con éxito.", habitacionDTO);
 		return ResponseEntity.ok(response);
 	}
     /**
@@ -138,7 +159,7 @@ public class HabitacionController {
      * @throws EntityNotFoundException Si no se encuentra una habitación con el ID proporcionado.
      */
     @PatchMapping("/{idHabitacion}")
-    public ResponseEntity<?> actualizarCampoHabitacion(@PathVariable Long idHabitacion, @RequestBody HabitacionDTO habitacionDTO) throws EntityNotFoundException {
+    public ResponseEntity<?> actualizarCampoHabitacion(@PathVariable Long idHabitacion, @RequestBody HabitacionDTO habitacionDTO) throws EntityNotFoundException, IllegalOperationException {
         Habitacion habitacion = modelMapper.map(habitacionDTO, Habitacion.class);
         habitacionService.actualizarCampoHabitacion(idHabitacion, habitacion);
         
@@ -160,7 +181,21 @@ public class HabitacionController {
         ApiResponse<ReservaDTO> response = new ApiResponse<>(true, "Reserva obtenida con éxito.", reservaDTO);
         return ResponseEntity.ok(response);
     }
+    /*
+    @GetMapping("/{id}/reservas")
+    public ResponseEntity<?> obtenerReservasPorHabitacion(@PathVariable Long id) throws EntityNotFoundException {
+        List<Reserva> reservas = (List<Reserva>) habitacionService.obtenerReservasPorHabitacion(id);
+        List<ReservaDTO> reservasDTOs = reservas.stream()
+                .map(reserva -> modelMapper.map(reserva, ReservaDTO.class))
+                .collect(Collectors.toList());
+        ApiResponse<List<ReservaDTO>> response = new ApiResponse<>(
+                true,
+                "Lista de reservas de la habitación obtenida con éxito",
+                reservasDTOs
+        );
 
+        return ResponseEntity.ok(response);
+    }*/
     /**
      * @GetMapping("/{idHabitacion}/reserva/{idReserva}")
 public ResponseEntity<?> obtenerReservaDeHabitacion(@PathVariable Long idHabitacion, @PathVariable Long idReserva) throws EntityNotFoundException {

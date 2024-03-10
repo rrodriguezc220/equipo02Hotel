@@ -11,8 +11,12 @@ import java.util.List;
 import com.equipo02.hotel.domain.Habitacion;
 import com.equipo02.hotel.domain.Huesped;
 import com.equipo02.hotel.domain.Reserva;
+import com.equipo02.hotel.exception.BadRequestException;
 import com.equipo02.hotel.exception.EntityNotFoundException;
 import com.equipo02.hotel.exception.IllegalOperationException;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+
 /**
  * Interfaz que define los servicios disponibles para la entidad Habitacion.
  */
@@ -28,7 +32,7 @@ public interface HabitacionService {
 	 * @return Un objeto Habitacion que representa la habitación encontrada.
 	 * @throws EntityNotFoundException si no se encuentra una habitación con el ID proporcionado.
 	 */
-    Habitacion buscarPorIdHabitacion(Long id) throws EntityNotFoundException;
+    Habitacion buscarPorIdHabitacion(Long id) throws EntityNotFoundException,BadRequestException;
     /**
      * Método para guardar una nueva habitación.
      * @param habitacion Un objeto Habitacion que representa la habitación a guardar.
@@ -59,7 +63,7 @@ public interface HabitacionService {
      * @return Un objeto Habitacion que representa la Habitación actualizada.
      * @throws EntityNotFoundException Si no se encuentra una Habitación con el ID proporcionado.
      */
-    Habitacion actualizarCampoHabitacion(Long id, Habitacion habitacion) throws EntityNotFoundException;
+    Habitacion actualizarCampoHabitacion(Long id, Habitacion habitacion) throws EntityNotFoundException, IllegalOperationException;
     /**
      * Método para obtener una Reserva específica asociada con una Habitación en particular.
      *
@@ -69,4 +73,5 @@ public interface HabitacionService {
      * @throws EntityNotFoundException Si no se encuentra una Habitación con el ID proporcionado o si la Habitación no tiene una Reserva con el ID proporcionado.
      */
     Reserva obtenerReservaDeHabitacion(Long idHabitacion, Long idReserva) throws EntityNotFoundException;
+     //Habitacion obtenerReservasPorHabitacion(@PathVariable Long id) throws EntityNotFoundException;
 }

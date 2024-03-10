@@ -52,7 +52,7 @@ public class Habitacion {
 	  * Lista de reservas asociadas a la habitación.
 	  */
 	@ManyToMany(mappedBy = "habitaciones")
-    @JsonBackReference
+    //@JsonBackReference
 	//@JsonManagedReference
 	private List<Reserva> reservas;
 	

@@ -11,15 +11,19 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.equipo02.hotel.domain.Habitacion;
 import com.equipo02.hotel.domain.Reserva;
+import com.equipo02.hotel.exception.BadRequestException;
 import com.equipo02.hotel.exception.EntityNotFoundException;
 import com.equipo02.hotel.exception.ErrorMessage;
 import com.equipo02.hotel.exception.IllegalOperationException;
 import com.equipo02.hotel.repositories.HabitacionRepository;
+import org.springframework.web.bind.annotation.PathVariable;
+
 /**
  * Implementación de los servicios disponibles para la entidad Habitacion.
  */
@@ -45,7 +49,7 @@ public class HabitacionServiceImp implements HabitacionService {
      */
 	@Override
 	@Transactional(readOnly = true)
-	public Habitacion buscarPorIdHabitacion(Long idHabitacion) throws EntityNotFoundException {
+	public Habitacion buscarPorIdHabitacion(Long idHabitacion) throws EntityNotFoundException,BadRequestException {
 		Optional<Habitacion> habitacion = habitacionRepository.findById(idHabitacion);
 		if (habitacion.isEmpty()) {
 	        throw new EntityNotFoundException(ErrorMessage.HABITACION_NOT_FOUND);
@@ -110,7 +114,7 @@ public class HabitacionServiceImp implements HabitacionService {
 	 */
 	@Override
 	@Transactional
-	public Habitacion actualizarCampoHabitacion(Long id, Habitacion habitacion) throws EntityNotFoundException{
+	public Habitacion actualizarCampoHabitacion(Long id, Habitacion habitacion) throws EntityNotFoundException,IllegalOperationException{
 	    Optional<Habitacion> habitacionEntity = habitacionRepository.findById(id);
 	    if(habitacionEntity.isEmpty()) {
 	        throw new EntityNotFoundException(ErrorMessage.HABITACION_NOT_FOUND);
@@ -153,7 +157,15 @@ public class HabitacionServiceImp implements HabitacionService {
 	    }
 	    return optionalReserva.get();
 	}
-	
+	/*@Override
+	@Transactional(readOnly = true)
+	public Habitacion obtenerReservasPorHabitacion(@PathVariable Long id) throws EntityNotFoundException {
+		Optional<Habitacion> habitacion = habitacionRepository.findById(id);
+		if (habitacion.isEmpty()) {
+	        throw new EntityNotFoundException(ErrorMessage.HABITACION_NOT_FOUND);
+		}
+	        return habitacion.get();
+	}*/
 
 
 }

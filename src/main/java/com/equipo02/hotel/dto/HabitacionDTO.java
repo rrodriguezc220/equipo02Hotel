@@ -14,11 +14,12 @@ import com.equipo02.hotel.domain.Reserva;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.hateoas.RepresentationModel;
 
 /**
  * Clase que representa una Habitación en el dominio del hotel en forma de DTO (Data Transfer Object).
  */
-public class HabitacionDTO {
+public class HabitacionDTO extends RepresentationModel<HabitacionDTO> {
 	
 	/**
      * Identificador único de la habitación.
