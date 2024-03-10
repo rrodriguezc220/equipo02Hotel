@@ -5,13 +5,16 @@
  */
 package com.equipo02.hotel.exception;
 
+import com.equipo02.hotel.util.ApiResponse;
 import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 /**
  * Clase para manejar excepciones globales en la aplicación.
@@ -88,6 +91,17 @@ public class GlobalExceptionHandler {
 				request.getDescription(false));
 		return new ResponseEntity<>(message, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
-	
 
+	/**
+	 * Maneja la excepción de acceso denegado.
+	 *
+	 * @param ex      la excepción de acceso denegado.
+	 * @param request la solicitud web.
+	 * @return ResponseEntity con el mensaje de error y el código de estado FORBIDDEN.
+	 */
+	@ExceptionHandler(AccessDeniedException.class)
+	public ResponseEntity<ApiResponse<String>> handleAccessDeniedException(AccessDeniedException ex, WebRequest request) {
+		ApiResponse<String> response = new ApiResponse<>(false, "Acceso denegado: No tienes permiso para acceder a este recurso.", null);
+		return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
+	}
 }
