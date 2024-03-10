@@ -24,14 +24,36 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+/**
+ * Filtro de autenticación JWT.
+ * Este filtro se encarga de autenticar las solicitudes HTTP con tokens JWT.
+ */
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
+    /**
+     * Servicio JWT.
+     * Este campo se utiliza para generar y validar tokens JWT.
+     */
     private final JwtService jwtService;
+
+    /**
+     * Servicio de detalles de usuario.
+     * Este campo se utiliza para cargar los detalles de un usuario.
+     */
     private final UserDetailsService userDetailsService;
 
-
+    /**
+     * Método para filtrar las solicitudes HTTP.
+     * Este método autentica las solicitudes HTTP con tokens JWT.
+     *
+     * @param request La solicitud HTTP.
+     * @param response La respuesta HTTP.
+     * @param filterChain La cadena de filtros.
+     * @throws ServletException Si ocurre un error al procesar la solicitud.
+     * @throws IOException Si ocurre un error de entrada/salida.
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         final String token = getTokenFromRequest(request);
@@ -59,6 +81,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
+    /**
+     * Método para obtener el token de la solicitud HTTP.
+     * Este método extrae el token JWT de la cabecera de autorización de la solicitud HTTP.
+     *
+     * @param request La solicitud HTTP.
+     * @return El token JWT, o null si no se encuentra.
+     */
     private String getTokenFromRequest(HttpServletRequest request) {
         final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
@@ -67,7 +96,4 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
         return null;
     }
-
-
-
 }

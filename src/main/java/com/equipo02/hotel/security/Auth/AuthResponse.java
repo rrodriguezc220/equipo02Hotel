@@ -10,11 +10,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
+/**
+ * Clase de respuesta de autenticación.
+ * Esta clase representa la respuesta de autenticación después de un inicio de sesión o registro exitoso.
+ */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class AuthResponse {
+    /**
+     * El token de autenticación.
+     */
     String token;
 }

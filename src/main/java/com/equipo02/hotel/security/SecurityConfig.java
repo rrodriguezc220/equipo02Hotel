@@ -23,34 +23,53 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-
+/**
+ * Configuración de seguridad.
+ * Esta clase configura la seguridad de la aplicación.
+ */
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    /**
+     * Filtro de autenticación JWT.
+     * Este campo es utilizado para autenticar las solicitudes con JWT.
+     */
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    /**
+     * Proveedor de autenticación.
+     * Este campo es utilizado para autenticar las solicitudes.
+     */
     private final AuthenticationProvider authProvider;
 
-    /*@Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests( authorize -> authorize
-                        .requestMatchers("/auth/**").permitAll()
-                        .anyRequest().authenticated())
-                .sessionManagement(sessionManager->
-                        sessionManager
-                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authenticationProvider(authProvider)
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .build();
-    }*/
-
+    /**
+     * Ruta de autenticación.
+     * Esta constante define la ruta de autenticación.
+     */
     private static final String AUTH_PATH = "/auth/**";
+
+    /**
+     * Rutas de empleado.
+     * Esta constante define las rutas accesibles para los empleados.
+     */
     private static final String[] EMPLOYEE_PATHS = {"/api/huespedes/**", "/api/reservas/**", "/api/habitaciones/**"};
+
+    /**
+     * Ruta de administrador.
+     * Esta constante define la ruta accesible para los administradores.
+     */
     private static final String ADMIN_PATH = "/api/**";
 
+    /**
+     * Método para configurar la cadena de filtros de seguridad.
+     * Este método configura la cadena de filtros de seguridad de la aplicación.
+     *
+     * @param http El objeto HttpSecurity.
+     * @return La cadena de filtros de seguridad.
+     * @throws Exception Si ocurre un error durante la configuración.
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         RequestMatcher employeePaths = new OrRequestMatcher(
@@ -77,5 +96,4 @@ public class SecurityConfig {
             throw e;
         }
     }
-
 }
