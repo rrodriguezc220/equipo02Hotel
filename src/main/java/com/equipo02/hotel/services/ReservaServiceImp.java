@@ -145,27 +145,21 @@ public class ReservaServiceImp implements ReservaService {
 	    if (reservaEntity.isEmpty()) {
 	        throw new EntityNotFoundException(ErrorMessage.RESERVA_NOT_FOUND);
 	    }
-
-	    // Verificar y asignar el huésped si es válido
-	    if (reserva.getHuesped() != null && reserva.getHuesped().getIdHuesped() != null) {
+		if (reserva.getHuesped() != null && reserva.getHuesped().getIdHuesped() != null) {
 	        Huesped huesped = huespedRepository.findById(reserva.getHuesped().getIdHuesped())
 	                .orElseThrow(() -> new IllegalOperationException("El huésped especificado no existe"));
 	        reserva.setHuesped(huesped);
 	    } else {
 	        reserva.setHuesped(reservaEntity.get().getHuesped());
 	    }
-
-	    // Verificar y asignar el empleado si es válido
-	    if (reserva.getEmpleado() != null && reserva.getEmpleado().getIdEmpleado() != null) {
+		if (reserva.getEmpleado() != null && reserva.getEmpleado().getIdEmpleado() != null) {
 	        Empleado empleado = empleadoRepository.findById(reserva.getEmpleado().getIdEmpleado())
 	                .orElseThrow(() -> new IllegalOperationException("El empleado especificado no existe"));
 	        reserva.setEmpleado(empleado);
 	    } else {
 	        reserva.setEmpleado(reservaEntity.get().getEmpleado());
 	    }
-
-	    // Actualizar otros campos si no son nulos
-	    if (reserva.getFechaInicio() != null) {
+		if (reserva.getFechaInicio() != null) {
 	        reservaEntity.get().setFechaInicio(reserva.getFechaInicio());
 	    }
 	    if (reserva.getFechaFin() != null) {
@@ -174,9 +168,7 @@ public class ReservaServiceImp implements ReservaService {
 	    if (reserva.isEstado()) {
 	        reservaEntity.get().setEstado(reserva.isEstado());
 	    }
-
-	    // Guardar la reserva actualizada
-	    return reservaRepository.save(reservaEntity.get());
+		return reservaRepository.save(reservaEntity.get());
 	}
 	
     /**
