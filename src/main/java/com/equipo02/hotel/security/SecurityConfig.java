@@ -6,6 +6,9 @@
 package com.equipo02.hotel.security;
 
 import com.equipo02.hotel.security.JWT.JwtAuthenticationFilter;
+import com.equipo02.hotel.util.ApiResponse;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -79,6 +82,15 @@ public class SecurityConfig {
 
         try {
             return http
+                    .exceptionHandling(exceptionHandling -> exceptionHandling
+                            .accessDeniedHandler((request, response, ex) -> {
+                                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                                response.setContentType("application/json");
+                                ApiResponse<String> apiResponse = new ApiResponse<>(false, "Acceso denegado: No tienes permiso para acceder a este recurso.", null);
+                                ObjectMapper mapper = new ObjectMapper();
+                                String jsonResponse = mapper.writeValueAsString(apiResponse);
+                                response.getWriter().write(jsonResponse);
+                            }))
                     .csrf(AbstractHttpConfigurer::disable)
                     .authorizeHttpRequests( authorize -> authorize
                             .requestMatchers(new AntPathRequestMatcher(AUTH_PATH)).permitAll()

@@ -157,6 +157,13 @@ public class HabitacionServiceImp implements HabitacionService {
 	    }
 	    return optionalReserva.get();
 	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<Reserva> obtenerReservasDeHabitaciones(Long idHabitacion)throws EntityNotFoundException{
+		Habitacion habitacion = buscarPorIdHabitacion(idHabitacion);
+	return habitacion.getReservas();
+	}
 	/*@Override
 	@Transactional(readOnly = true)
 	public Habitacion obtenerReservasPorHabitacion(@PathVariable Long id) throws EntityNotFoundException {

@@ -59,8 +59,8 @@ public class HuespedDTO {
 	/**
      * Correo del huesped.
      */
-	@NotEmpty
-    @Email
+	@NotEmpty(message = "El correo no puede estar en blanco")
+    @Email(message = "Formato de correo no válido")
 	@Column(unique = true)
 	private String correoHuesped;
 	
