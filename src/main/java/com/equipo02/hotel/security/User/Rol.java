@@ -7,5 +7,6 @@ package com.equipo02.hotel.security.User;
 
 public enum Rol {
     ADMIN,
+    EMPLOYEE,
     USER
 }

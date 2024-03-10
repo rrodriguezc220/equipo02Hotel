@@ -16,6 +16,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.OrRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
+
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 
 @Configuration
@@ -26,7 +32,7 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final AuthenticationProvider authProvider;
 
-    @Bean
+    /*@Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
@@ -39,6 +45,37 @@ public class SecurityConfig {
                 .authenticationProvider(authProvider)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
+    }*/
+
+    private static final String AUTH_PATH = "/auth/**";
+    private static final String[] EMPLOYEE_PATHS = {"/api/huespedes/**", "/api/reservas/**", "/api/habitaciones/**"};
+    private static final String ADMIN_PATH = "/api/**";
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        RequestMatcher employeePaths = new OrRequestMatcher(
+                Arrays.stream(EMPLOYEE_PATHS).map(AntPathRequestMatcher::new).collect(Collectors.toList())
+        );
+        RequestMatcher adminPaths = new AntPathRequestMatcher(ADMIN_PATH);
+
+        try {
+            return http
+                    .csrf(AbstractHttpConfigurer::disable)
+                    .authorizeHttpRequests( authorize -> authorize
+                            .requestMatchers(new AntPathRequestMatcher(AUTH_PATH)).permitAll()
+                            .requestMatchers(employeePaths).hasAnyAuthority("EMPLOYEE", "ADMIN")
+                            .requestMatchers(adminPaths).hasAuthority("ADMIN")
+                            .anyRequest().authenticated())
+                    .sessionManagement(sessionManager->
+                            sessionManager
+                                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                    .authenticationProvider(authProvider)
+                    .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                    .build();
+        } catch (Exception e) {
+            // manejar la excepción
+            throw e;
+        }
     }
 
 }

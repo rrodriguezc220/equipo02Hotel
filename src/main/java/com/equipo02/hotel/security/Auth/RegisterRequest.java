@@ -1,5 +1,6 @@
 package com.equipo02.hotel.security.Auth;
 
+import com.equipo02.hotel.security.User.Rol;
 import lombok.*;
 
 /**
@@ -16,4 +17,5 @@ public class RegisterRequest {
     String password;
     String firstname;
     String lastname;
+    Rol rol;
 }
