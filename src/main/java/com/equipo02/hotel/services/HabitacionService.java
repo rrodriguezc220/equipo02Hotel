@@ -73,5 +73,7 @@ public interface HabitacionService {
      * @throws EntityNotFoundException Si no se encuentra una Habitación con el ID proporcionado o si la Habitación no tiene una Reserva con el ID proporcionado.
      */
     Reserva obtenerReservaDeHabitacion(Long idHabitacion, Long idReserva) throws EntityNotFoundException;
-     //Habitacion obtenerReservasPorHabitacion(@PathVariable Long id) throws EntityNotFoundException;
+
+    List<Reserva> obtenerReservasDeHabitaciones(Long idHabitacion)throws EntityNotFoundException;
+    //Habitacion obtenerReservasPorHabitacion(@PathVariable Long id) throws EntityNotFoundException;
 }
