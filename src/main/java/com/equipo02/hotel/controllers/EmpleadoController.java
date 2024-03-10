@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.equipo02.hotel.domain.Habitacion;
+import com.equipo02.hotel.exception.BadRequestException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,6 +31,10 @@ import com.equipo02.hotel.services.EmpleadoService;
 import com.equipo02.hotel.util.ApiResponse;
 
 import jakarta.validation.Valid;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 /**
  * Controlador REST que maneja las operaciones relacionadas con los empleados en el hotel.
  */
@@ -49,12 +55,20 @@ public class EmpleadoController {
      * @throws EntityNotFoundException si no se encuentran empleados.
      */
 	@GetMapping
-	public ResponseEntity<?> obtenerTodos(){
-		List<Empleado> empleados= empleadoService.listarEmpleados();
-		List<EmpleadoDTO> empleadosDTOs = empleados.stream().map
-				(empleado-> modelMapper.map(empleado, EmpleadoDTO.class)).collect(Collectors.toList());
-		ApiResponse<List<EmpleadoDTO>> response = new ApiResponse<>
-		(true, "Lista de empleados obtenida con éxito", empleadosDTOs);
+	public ResponseEntity<?> obtenerTodos() throws EntityNotFoundException {
+		List<Empleado> empleados = empleadoService.listarEmpleados();
+		List<EmpleadoDTO> empleadoDTOS = empleados.stream().map(empleado -> modelMapper.map(empleado, EmpleadoDTO.class)).collect(Collectors.toList());
+
+		for (EmpleadoDTO empleadoDTO : empleadoDTOS) {
+
+			if (!empleadoDTO.getReservas().isEmpty()) {
+				for (Reserva reserva : empleadoDTO.getReservas()) {
+					Long idReserva = reserva.getIdReserva();
+					empleadoDTO.add(linkTo(methodOn(HabitacionController.class).buscarPorIdHabitacion(idReserva)).withRel("reserva"));
+				}
+			}
+		}
+		ApiResponse<List<EmpleadoDTO>> response = new ApiResponse<>(true, "Lista de empleados obtenida con éxito.", empleadoDTOS);
 		return ResponseEntity.ok(response);
 	}
 	
@@ -66,11 +80,18 @@ public class EmpleadoController {
      * @throws EntityNotFoundException si no se encuentra un empleado con el ID proporcionado.
      */
 	@GetMapping("/{id}")
-	public ResponseEntity<?> obtenerPorId(@PathVariable Long id) throws EntityNotFoundException{
+	public ResponseEntity<?> obtenerPorId(@PathVariable Long id) throws EntityNotFoundException, BadRequestException {
 		Empleado empleado = empleadoService.buscarPorId(id);
 		EmpleadoDTO empleadoDTO = modelMapper.map(empleado, EmpleadoDTO.class);
 
-		ApiResponse<EmpleadoDTO> response = new ApiResponse<>(true, "Empleado obtenido con éxito", empleadoDTO);
+		if (!empleadoDTO.getReservas().isEmpty()) {
+			for (Reserva reserva : empleado.getReservas()) {
+				Long idReserva = reserva.getIdReserva();
+				empleadoDTO.add(linkTo(methodOn(ReservaController.class).buscarPorIdReserva(idReserva)).withRel("reserva"));
+			}
+		}
+		ApiResponse<EmpleadoDTO> response = new ApiResponse<>(true, "Empleado obtenido con éxito.", empleadoDTO);
+
 		return ResponseEntity.ok(response);
 	}
 
@@ -91,7 +112,7 @@ public class EmpleadoController {
 		empleadoService.grabar(empleado);
 
 		EmpleadoDTO savedEmpleadoDTO = modelMapper.map(empleado, EmpleadoDTO.class);
-		ApiResponse<EmpleadoDTO> response = new ApiResponse<>(true, "Huesped guardado con éxito", savedEmpleadoDTO);
+		ApiResponse<EmpleadoDTO> response = new ApiResponse<>(true, "Empleado guardado con éxito", savedEmpleadoDTO);
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
 
@@ -99,7 +120,7 @@ public class EmpleadoController {
      * Método para actualizar los detalles de un empleado existente.
      * 
      * @param id El ID del empleado que se desea actualizar.
-     * @param habitacionDTO Un objeto EmpleadoDTO que representa el empleado con los detalles actualizados.
+     * @param empleadoDTO Un objeto EmpleadoDTO que representa el empleado con los detalles actualizados.
      * @return ResponseEntity que contiene una ApiResponse. La ApiResponse incluye un EmpleadoDTO que representa el empleado actualizado.
      * @throws EntityNotFoundException si no se encuentra un empleado con el ID proporcionado.
      * @throws IllegalOperationException si ocurre un error al actualizar el empleado.
@@ -135,13 +156,17 @@ public class EmpleadoController {
 	
 	/**
      * Método para actualizar los campos de un empleado.
-     * @param idHabitacion El ID del empleado que se va a actualizar.
+     * @param idEmpleado El ID del empleado que se va a actualizar.
      * @param empleadoDTO Un objeto DTO que contiene los nuevos datos del empleado.
      * @return Una respuesta HTTP que contiene el objeto DTO del empleado actualizado.
      * @throws EntityNotFoundException Si no se encuentra un empleado con el ID proporcionado.
      */
 	@PatchMapping("/{idEmpleado}")
-	public ResponseEntity<?> buscarCampo(@PathVariable Long idEmpleado, @RequestBody EmpleadoDTO empleadoDTO) throws EntityNotFoundException, IllegalOperationException{
+	public ResponseEntity<?> buscarCampo(@Valid @RequestBody EmpleadoDTO empleadoDTO,BindingResult result ,@PathVariable Long idEmpleado) throws EntityNotFoundException, IllegalOperationException{
+		if(result.hasErrors()) {
+			return validar(result);
+		}
+
 		Empleado empleado = modelMapper.map(empleadoDTO, Empleado.class);
 		empleadoService.actualizarPorCampo(idEmpleado, empleado);
 
@@ -160,13 +185,11 @@ public class EmpleadoController {
      */
     @GetMapping("/{idEmpleado}/reservas/{idReserva}")
     public ResponseEntity<?> obtenerReservaDeEmpleado(@PathVariable Long idEmpleado, @PathVariable Long idReserva) throws EntityNotFoundException {
-        Reserva reserva = empleadoService.obtenerReservaDeEmpleado(idEmpleado, idReserva);
-        ReservaDTO reservaDTO = modelMapper.map(reserva, ReservaDTO.class);
-        ApiResponse<ReservaDTO> response = new ApiResponse<>(true, "Reserva obtenida con éxito.", reservaDTO);
-        return ResponseEntity.ok(response);
-    }
-	
-	
+		Reserva reserva = empleadoService.obtenerReservaDeEmpleado(idEmpleado, idReserva);
+		ReservaDTO reservaDTO = modelMapper.map(reserva, ReservaDTO.class);
+		ApiResponse<ReservaDTO> response = new ApiResponse<>(true, "Reserva obtenida con éxito.", reservaDTO);
+		return ResponseEntity.ok(response);
+	}
 	
 	 /**
      * Método para validar los errores de binding result.
@@ -176,7 +199,7 @@ public class EmpleadoController {
 	 private ResponseEntity<Map<String, String>> validar(BindingResult result) {
 	        Map<String, String> errores = new HashMap<>();
 	        result.getFieldErrors().forEach(err -> {
-	            errores.put(err.getField(), "" + " " + err.getDefaultMessage());
+	            errores.put(err.getField(), "El campo " + err.getField() + " " + err.getDefaultMessage());
 	        });
 	        return ResponseEntity.badRequest().body(errores);
 	    }

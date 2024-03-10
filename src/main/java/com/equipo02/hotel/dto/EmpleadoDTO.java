@@ -14,10 +14,12 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import org.springframework.hateoas.RepresentationModel;
+
 /**
  * Clase que representa un Empleado en el dominio del hotel en forma de DTO (Data Transfer Object).
  */
-public class EmpleadoDTO {
+public class EmpleadoDTO extends RepresentationModel<EmpleadoDTO> {
 
 	/**
      * Identificador único del empleado.
@@ -66,7 +68,7 @@ public class EmpleadoDTO {
      */
 	private List<Reserva> reservas = new ArrayList<Reserva>();
 
-	
+
 	/**
      * Métodos getters y setters para acceder y modificar los atributos de la clase Empleado.
      */
