@@ -18,11 +18,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import org.springframework.hateoas.RepresentationModel;
 
 /**
  * Clase que representa un objeto de transferencia de datos (DTO) para un huésped del hotel.
  */
-public class HuespedDTO {
+public class HuespedDTO extends RepresentationModel<HuespedDTO> {
 
 	/**
      * Identificador único del huesped.

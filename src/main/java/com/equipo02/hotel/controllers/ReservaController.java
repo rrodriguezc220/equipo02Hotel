@@ -257,12 +257,13 @@ public class ReservaController {
     }
     
     /**Método auxiliar para manejar errores de validación*/
-    private ResponseEntity<Map<String, String>> validar(BindingResult result) {
+    private ResponseEntity<?> validar(BindingResult result) {
         Map<String, String> errores = new HashMap<>();
         result.getFieldErrors().forEach(err -> {
-            errores.put(err.getField(), "El campo " + err.getField() + " " + err.getDefaultMessage());
+            errores.put(err.getField(), err.getDefaultMessage());
         });
-        return ResponseEntity.badRequest().body(errores);
+        ApiResponse<Map<String, String>> response = new ApiResponse<>(false, "Errores de validación", errores);
+        return ResponseEntity.badRequest().body(response);
     }
     
     

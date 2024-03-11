@@ -64,7 +64,7 @@ public class EmpleadoController {
 			if (!empleadoDTO.getReservas().isEmpty()) {
 				for (Reserva reserva : empleadoDTO.getReservas()) {
 					Long idReserva = reserva.getIdReserva();
-					empleadoDTO.add(linkTo(methodOn(HabitacionController.class).buscarPorIdHabitacion(idReserva)).withRel("reserva"));
+					empleadoDTO.add(linkTo(methodOn(ReservaController.class).buscarPorIdReserva(idReserva)).withRel("reserva"));
 				}
 			}
 		}
@@ -85,13 +85,13 @@ public class EmpleadoController {
 		EmpleadoDTO empleadoDTO = modelMapper.map(empleado, EmpleadoDTO.class);
 
 		if (!empleadoDTO.getReservas().isEmpty()) {
-			for (Reserva reserva : empleado.getReservas()) {
+			for (Reserva reserva : empleadoDTO.getReservas()) {
 				Long idReserva = reserva.getIdReserva();
 				empleadoDTO.add(linkTo(methodOn(ReservaController.class).buscarPorIdReserva(idReserva)).withRel("reserva"));
 			}
 		}
-		ApiResponse<EmpleadoDTO> response = new ApiResponse<>(true, "Empleado obtenido con éxito.", empleadoDTO);
 
+		ApiResponse<EmpleadoDTO> response = new ApiResponse<>(true, "Empleado obtenido con éxito.", empleadoDTO);
 		return ResponseEntity.ok(response);
 	}
 
@@ -187,6 +187,14 @@ public class EmpleadoController {
     public ResponseEntity<?> obtenerReservaDeEmpleado(@PathVariable Long idEmpleado, @PathVariable Long idReserva) throws EntityNotFoundException {
 		Reserva reserva = empleadoService.obtenerReservaDeEmpleado(idEmpleado, idReserva);
 		ReservaDTO reservaDTO = modelMapper.map(reserva, ReservaDTO.class);
+
+		if (!reservaDTO.getHabitaciones().isEmpty()) {
+			for (Habitacion habitacion : reservaDTO.getHabitaciones()) {
+				Long idHabitacion = habitacion.getIdHabitacion();
+				reservaDTO.add(linkTo(methodOn(HabitacionController.class).buscarPorIdHabitacion(idHabitacion)).withRel("habitacion"));
+			}
+		}
+
 		ApiResponse<ReservaDTO> response = new ApiResponse<>(true, "Reserva obtenida con éxito.", reservaDTO);
 		return ResponseEntity.ok(response);
 	}
@@ -196,11 +204,12 @@ public class EmpleadoController {
      * @param result El objeto BindingResult que contiene los resultados de la validación.
      * @return ResponseEntity que contiene un mapa de los errores. Cada entrada en el mapa tiene el nombre del campo como clave y el mensaje de error como valor.
      */
-	 private ResponseEntity<Map<String, String>> validar(BindingResult result) {
-	        Map<String, String> errores = new HashMap<>();
-	        result.getFieldErrors().forEach(err -> {
-	            errores.put(err.getField(), "El campo " + err.getField() + " " + err.getDefaultMessage());
-	        });
-	        return ResponseEntity.badRequest().body(errores);
-	    }
+	 private ResponseEntity<?> validar(BindingResult result) {
+		 Map<String, String> errores = new HashMap<>();
+		 result.getFieldErrors().forEach(err -> {
+			 errores.put(err.getField(), err.getDefaultMessage());
+		 });
+		 ApiResponse<Map<String, String>> response = new ApiResponse<>(false, "Errores de validación", errores);
+		 return ResponseEntity.badRequest().body(response);
+	 }
 }

@@ -157,7 +157,7 @@ public class EmpleadoServiceImp implements EmpleadoService {
 	            .filter(r -> r.getIdReserva().equals(idReserva))
 	            .findFirst();
 	    if (optionalReserva.isEmpty()) {
-	        throw new EntityNotFoundException("Reserva no encontrada en la habitación");
+	        throw new EntityNotFoundException("Reserva no asignada al empleado.");
 	    }
 	    return optionalReserva.get();
 	}

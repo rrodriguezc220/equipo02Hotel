@@ -54,8 +54,7 @@ public class HabitacionController {
 	
     @Autowired
     private ModelMapper modelMapper;
-    
-    
+
     /**
      * Método para obtener una lista de todas las habitaciones.
      * 
@@ -88,7 +87,6 @@ public class HabitacionController {
 	public ResponseEntity<?> buscarPorIdHabitacion(@PathVariable Long id) throws EntityNotFoundException, BadRequestException{
     	Habitacion habitacion = habitacionService.buscarPorIdHabitacion(id);
     	HabitacionDTO habitacionDTO = modelMapper.map(habitacion, HabitacionDTO.class);
-
 
         if (!habitacionDTO.getReservas().isEmpty()) {
             for (Reserva reserva : habitacion.getReservas()) {
@@ -202,13 +200,12 @@ public class HabitacionController {
      * @param result El objeto BindingResult que contiene los resultados de la validación.
      * @return ResponseEntity que contiene un mapa de los errores. Cada entrada en el mapa tiene el nombre del campo como clave y el mensaje de error como valor.
      */
-    private ResponseEntity<Map<String, String>> validar(BindingResult result) {
+    private ResponseEntity<?> validar(BindingResult result) {
         Map<String, String> errores = new HashMap<>();
         result.getFieldErrors().forEach(err -> {
-            errores.put(err.getField(), "El campo " + err.getField() + " " + err.getDefaultMessage());
+            errores.put(err.getField(), err.getDefaultMessage());
         });
-        return ResponseEntity.badRequest().body(errores);
+        ApiResponse<Map<String, String>> response = new ApiResponse<>(false, "Errores de validación", errores);
+        return ResponseEntity.badRequest().body(response);
     }
-    
 }
-
