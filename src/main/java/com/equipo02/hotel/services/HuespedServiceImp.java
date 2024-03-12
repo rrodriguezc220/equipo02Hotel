@@ -275,7 +275,7 @@ public class HuespedServiceImp implements HuespedService {
 		List<Reserva> reservas = huesped.get().getReservas();
 		
 		if(reservas.isEmpty()) {
-			throw new EntityNotFoundException(ErrorMessage.RESERVA_NOT_FOUND);
+			throw new EntityNotFoundException("No se encontraron reservas asociadas al huésped");
 		}
 		
 		return reservas;
@@ -328,7 +328,7 @@ public class HuespedServiceImp implements HuespedService {
 		
 		List<Habitacion> habitaciones = reserva.get().getHabitaciones();
 		if(habitaciones.isEmpty()) {
-			throw new EntityNotFoundException(ErrorMessage.HABITACION_NOT_FOUND);
+			throw new EntityNotFoundException("No se encontraron habitaciones asociadas a la reserva");
 		}
 		
 		return habitaciones;

@@ -313,7 +313,7 @@ public class HuespedController {
 
 		HabitacionDTO habitacionDTO = modelMapper.map(habitacion, HabitacionDTO.class);
 
-		ApiResponse<HabitacionDTO> response = new ApiResponse<>(true, "Habitación de la reserva del huesped obtenido con éxito", habitacionDTO);
+		ApiResponse<HabitacionDTO> response = new ApiResponse<>(true, "Habitación de la reserva del huesped obtenida con éxito", habitacionDTO);
 
 		return ResponseEntity.ok(response);
 	}
