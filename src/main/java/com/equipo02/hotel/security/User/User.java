@@ -7,6 +7,9 @@ package com.equipo02.hotel.security.User;
 
 import com.equipo02.hotel.security.Auth.LoginRequest;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

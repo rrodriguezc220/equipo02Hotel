@@ -6,12 +6,17 @@
 
 package com.equipo02.hotel.security.Auth;
 
+import com.equipo02.hotel.dto.HuespedDTO;
+import com.equipo02.hotel.exception.IllegalOperationException;
+import com.equipo02.hotel.util.ApiResponse;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import lombok.RequiredArgsConstructor;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Controlador de autenticación.
@@ -45,8 +50,20 @@ public class AuthController {
      * @return Una respuesta de autenticación.
      */
     @PostMapping(value = "register")
-    public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request)
+    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest request, BindingResult result) throws IllegalOperationException
     {
+        if (result.hasErrors()) {
+            return validar(result);
+        }
         return ResponseEntity.ok(authService.register(request));
+    }
+
+    private ResponseEntity<?> validar(BindingResult result) {
+        Map<String, String> errores = new HashMap<>();
+        result.getFieldErrors().forEach(err -> {
+            errores.put(err.getField(), err.getDefaultMessage());
+        });
+        ApiResponse<Map<String, String>> response = new ApiResponse<>(false, "Errores de validación", errores);
+        return ResponseEntity.badRequest().body(response);
     }
 }

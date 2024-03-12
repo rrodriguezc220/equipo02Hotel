@@ -6,6 +6,10 @@
 
 package com.equipo02.hotel.security.Auth;
 
+import com.equipo02.hotel.domain.Empleado;
+import com.equipo02.hotel.exception.EntityNotFoundException;
+import com.equipo02.hotel.exception.ErrorMessage;
+import com.equipo02.hotel.exception.IllegalOperationException;
 import com.equipo02.hotel.security.JWT.JwtService;
 import com.equipo02.hotel.security.User.Rol;
 import com.equipo02.hotel.security.User.User;
@@ -18,6 +22,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Servicio de autenticación.
@@ -74,7 +81,7 @@ public class AuthService {
      * @param request La solicitud de registro.
      * @return Una respuesta de autenticación con el token.
      */
-    public AuthResponse register(RegisterRequest request) {
+    public AuthResponse register(RegisterRequest request) throws IllegalOperationException {
         User user = User.builder()
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
@@ -88,5 +95,18 @@ public class AuthService {
         return AuthResponse.builder()
                 .token(jwtService.getToken(user))
                 .build();
+    }
+
+    // obtener usuarios
+    public List<User> obtenerUsuarios(){
+        return userRepository.findAll();
+    }
+
+    public User obtenerUsuarioPorId(Long id) throws EntityNotFoundException {
+        Optional<User> user = userRepository.findById(id);
+        if(user.isEmpty()){
+            throw new EntityNotFoundException("El id del usuario no existe") ;
+        }
+        return user.get();
     }
 }
