@@ -124,7 +124,7 @@ public class HuespedServiceImp implements HuespedService {
 			}
 		}
 		Huesped huespedDni = huespedRep.findByDniHuesped(huesped.getDniHuesped());
-		if(huespedDni != null) {
+		if(huespedDni != null && huespedDni != huespedEntity.get()) {
 			throw new IllegalOperationException("El dni del huesped ya existe");
 		}
 		huesped.setIdHuesped(id);

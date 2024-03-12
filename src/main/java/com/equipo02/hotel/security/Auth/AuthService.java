@@ -97,11 +97,24 @@ public class AuthService {
                 .build();
     }
 
-    // obtener usuarios
+    /**
+     * Método para obtener todos los usuarios.
+     * Este método devuelve una lista de todos los usuarios registrados en el sistema.
+     *
+     * @return Una lista de usuarios.
+     */
     public List<User> obtenerUsuarios(){
         return userRepository.findAll();
     }
 
+    /**
+     * Método para obtener un usuario por su ID.
+     * Este método devuelve un usuario basado en su ID.
+     *
+     * @param id El ID del usuario.
+     * @return El usuario con el ID proporcionado.
+     * @throws EntityNotFoundException Si el usuario con el ID proporcionado no puede ser encontrado.
+     */
     public User obtenerUsuarioPorId(Long id) throws EntityNotFoundException {
         Optional<User> user = userRepository.findById(id);
         if(user.isEmpty()){

@@ -58,6 +58,13 @@ public class AuthController {
         return ResponseEntity.ok(authService.register(request));
     }
 
+    /**
+     * Método para validar los errores de un BindingResult.
+     * Este método recibe un BindingResult, verifica si hay errores y, en caso de que los haya, devuelve una respuesta con los errores.
+     *
+     * @param result El BindingResult a validar.
+     * @return Una respuesta con los errores de validación, si los hay.
+     */
     private ResponseEntity<?> validar(BindingResult result) {
         Map<String, String> errores = new HashMap<>();
         result.getFieldErrors().forEach(err -> {

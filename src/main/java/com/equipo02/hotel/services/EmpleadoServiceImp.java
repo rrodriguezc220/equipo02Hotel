@@ -8,6 +8,8 @@ package com.equipo02.hotel.services;
 
 import java.util.List;
 import java.util.Optional;
+
+import com.equipo02.hotel.domain.Huesped;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -86,7 +88,11 @@ public class EmpleadoServiceImp implements EmpleadoService {
 		if(empleado.getNombreEmpleado().isBlank()) {
 			throw new IllegalOperationException("El nombre del empleado no debe estar en blanco");
 		}
-		empleado.setIdEmpleado(id);		
+		Empleado empleadoDni = empleadoRep.findByDniEmpleado(empleado.getDniEmpleado());
+		if(empleadoDni != null && empleadoDni != empEntity.get()) {
+			throw new IllegalOperationException("El dni del empleado ya existe");
+		}
+		empleado.setIdEmpleado(id);
 		return empleadoRep.save(empleado);
 	}
 
