@@ -71,8 +71,8 @@ public class EmpleadoServiceImp implements EmpleadoService {
 
 	/**
      * Método para actualizar los detalles de un empleado existente.
-     * @param idHabitacion El ID del empleado a actualizar.
-     * @param Un objeto empleado que representa el empleado con los detalles actualizados.
+     * @param id El ID del empleado a actualizar.
+     * @param empleado objeto empleado que representa el empleado con los detalles actualizados.
      * @return Un objeto Empleado que representa el empleado actualizado.
      * @throws EntityNotFoundException si no se encuentra un empleado con el ID proporcionado.
      * @throws IllegalOperationException si ocurre un error al actualizar el empleado.
@@ -92,7 +92,7 @@ public class EmpleadoServiceImp implements EmpleadoService {
 
 	 /**
      * Método para eliminar un empleado existente.
-     * @param idHabitacion El ID del empleado a eliminar.
+     * @param id El ID del empleado a eliminar.
      * @throws EntityNotFoundException si no se encuentra un empleado con el ID proporcionado.
      * @throws IllegalOperationException si ocurre un error al eliminar el empleado.
      */
@@ -107,8 +107,8 @@ public class EmpleadoServiceImp implements EmpleadoService {
 
 	/**
 	 * Método para actualizar los campos de un empleado existente.
-	 * @param id El ID de la empleado a actualizar.
-	 * @param empleadoDTO Objeto DTO que contiene los campos actualizados del empleado.
+	 * @param id El ID del empleado a actualizar.
+	 * @param empleado Objeto DTO que contiene los campos actualizados del empleado.
 	 * @return ResponseEntity con un ApiResponse que contiene un mensaje de éxito junto con el empleado actualizado, junto con el código de estado HTTP 200 (OK) en caso de éxito.
 	 * @throws EntityNotFoundException si no se encuentra un empleado con el ID proporcionado.
 	 */
